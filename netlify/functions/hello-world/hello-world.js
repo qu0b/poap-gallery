@@ -1,0 +1,82 @@
+'use strict';
+const express = require('express');
+const serverless = require('serverless-http');
+const app = express();
+const bodyParser = require('body-parser');
+
+
+function dectectBot(userAgent) {
+  const bots = [
+    'bingbot',
+    'yandexbot',
+    'duckduckbot',
+    'slurp',
+    'twitterbot',
+    'facebookexternalhit',
+    'linkedinbot',
+    'embedly',
+    'baiduspider',
+    'pinterest',
+    'slackbot',
+    'vkShare',
+    'facebot',
+    'outbrain',
+    'W3C_Validator',
+    'whatsapp',
+  ];
+  const agent = userAgent.toLowerCase();
+  console.log(agent, 'agent');
+  for (const bot of bots) {
+    if (agent.indexOf(bot) > -1) {
+      console.log('bot detected', bot, agent);
+      return true;
+    }
+  }
+
+  console.log('no bots found');
+  return false;
+}
+
+const router = express.Router();
+router.get('/', (req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  const isBot = dectectBot(req.headers['user-agent']);
+  if (isBot) {
+    res.write(`
+    <!doctype html>
+    <head>
+          <title>hola</title>
+          <meta property="og:type" content="article">
+          <meta property="og:site_name" content="Quipu Market">
+          <meta property="og:title" content="$hola">
+          <meta property="og:description" content="hola">
+          <meta property="og:image:height" content="200">
+          <meta property="og:image:width" content="300">
+    </head>
+    <body>
+      <article>
+        <div>
+          <h2>hola</h2>
+        </div>
+        <div>
+          <p>hola</p>
+        </div>
+      </article>
+    </body>
+    </html>`);
+  } else {
+    res.write('<h1>Hello human</h1>');
+  }
+  res.end();
+});
+router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
+router.post('/', (req, res) => res.json({ postBody: req.body }));
+
+app.use(bodyParser.json());
+app.use('/.netlify/functions/hello-world', router);  // path must route to lambda
+
+module.exports = app;
+module.exports.handler = serverless(app);
+
+
+
