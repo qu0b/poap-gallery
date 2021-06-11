@@ -3,6 +3,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const bodyParser = require('body-parser');
+const request = require('request');
 
 
 function dectectBot(userAgent) {
@@ -41,9 +42,9 @@ function dectectBot(userAgent) {
 
 const router = express.Router();
 router.get('/', (req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/html' });
   const isBot = dectectBot(req.headers['user-agent']);
   if (isBot) {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
     res.write(`
     <!doctype html>
     <head>
@@ -66,10 +67,10 @@ router.get('/', (req, res) => {
       </article>
     </body>
     </html>`);
+    res.end();
   } else {
-    res.write('<h1>Hello human</h1>');
+    request('https://gallery-prerender.netlify.app/').pipe(res);
   }
-  res.end();
 });
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
