@@ -23,6 +23,8 @@ function dectectBot(userAgent) {
     'outbrain',
     'W3C_Validator',
     'whatsapp',
+    'telegrambot',
+    'discordbot'
   ];
   const agent = userAgent.toLowerCase();
   console.log(agent, 'agent');
