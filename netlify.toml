@@ -1,11 +1,9 @@
-# netlify.toml
 [build]
-    functions = "functions/"
-
-[dev]
-    functions = "functions/"
+  command = "npm run build"
+  publish = "build"
+  functions = "functions/"
 
 [[redirects]]
   from = '/event/*'
-  to = 'https://gallery-prerender.netlify.app/.netlify/functions/hello-world/:splat'
+  to = '/.netlify/functions/hello-world'
   status = 200
