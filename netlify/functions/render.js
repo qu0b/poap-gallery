@@ -2,7 +2,6 @@
 const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
-const bodyParser = require('body-parser');
 
 function dectectBot(userAgent) {
   const bots = [
