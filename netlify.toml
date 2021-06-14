@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/event/*"
+  to = "https://gallery-prerender.netlify.app/.netlify/functions/render"
+  status = 200
+  force = true
