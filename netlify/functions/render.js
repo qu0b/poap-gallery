@@ -72,10 +72,8 @@ router.get('/', (req, res) => {
   }
 });
 
-app.use(bodyParser.json());
-app.use('/render', router);  // path must route to lambda
+app.use('/.netlify/functions/render', router);  // path must route to lambda
 
-module.exports = app;
 module.exports.handler = serverless(app);
 
 
