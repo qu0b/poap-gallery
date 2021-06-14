@@ -3,3 +3,9 @@
   to = "https://gallery-prerender.netlify.app/.netlify/functions/render"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
