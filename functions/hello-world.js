@@ -41,6 +41,7 @@ function dectectBot(userAgent) {
 const router = express.Router();
 router.get('/', (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
+  console.log('i am here')
   if (isBot) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.write(`
@@ -67,14 +68,38 @@ router.get('/', (req, res) => {
     </html>`);
     res.end();
   } else {
-    res.redirect('http://'+req.hostname+'/r'+req.originalUrl)
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.write(`
+    <!doctype html>
+    <head>
+          <title>hola</title>
+          <meta property="og:type" content="article">
+          <meta property="og:site_name" content="Quipu Market">
+          <meta property="og:title" content="$hola">
+          <meta property="og:description" content="hola">
+          <meta property="og:image:height" content="200">
+          <meta property="og:image:width" content="300">
+    </head>
+    <body>
+      <article>
+        <div>
+          <h2>hola humano</h2>
+        </div>
+        <div>
+          <p>hola</p>
+        </div>
+      </article>
+    </body>
+    </html>`);
+    res.end();
+    //res.redirect('http://'+req.hostname+'/r'+req.originalUrl)
   }
 });
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
 
 app.use(bodyParser.json());
-app.use('/hello-world', router);  // path must route to lambda
+app.use('/hello-world/*', router);  // path must route to lambda
 
 module.exports = app;
 module.exports.handler = serverless(app);

@@ -1,5 +1,11 @@
+# netlify.toml
+[build]
+    functions = "functions/"
+
+[dev]
+    functions = "functions/"
+
 [[redirects]]
-  from = "/event/*"
-  to = "/.netlify/functions/hello-world"
+  from = '/event/*'
+  to = 'https://gallery-prerender.netlify.app/.netlify/functions/hello-world/:splat'
   status = 200
-  force = true
