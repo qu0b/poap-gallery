@@ -40,7 +40,6 @@ function dectectBot(userAgent) {
 const router = express.Router();
 router.get('/', (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
-  console.log('i am here')
   if (isBot) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.write(`
@@ -67,11 +66,11 @@ router.get('/', (req, res) => {
     </html>`);
     res.end();
   } else {
-    res.redirect('http://'+req.hostname+'/r'+req.originalUrl)
+    res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[4])
   }
 });
 
-app.use('/.netlify/functions/render', router);  // path must route to lambda
+app.use('/.netlify/functions/render/*', router);  // path must route to lambda
 
 module.exports.handler = serverless(app);
 
