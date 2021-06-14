@@ -1,10 +1,8 @@
-'use strict';
+'use strict'; 
 const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const bodyParser = require('body-parser');
-const request = require('request');
-
 
 function dectectBot(userAgent) {
   const bots = [
@@ -69,14 +67,14 @@ router.get('/', (req, res) => {
     </html>`);
     res.end();
   } else {
-    request('https://gallery-prerender.netlify.app/').pipe(res);
+    res.redirect('http://'+req.hostname+'/r'+req.originalUrl)
   }
 });
 router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 router.post('/', (req, res) => res.json({ postBody: req.body }));
 
 app.use(bodyParser.json());
-app.use('/.netlify/functions/hello-world', router);  // path must route to lambda
+app.use('/hello-world', router);  // path must route to lambda
 
 module.exports = app;
 module.exports.handler = serverless(app);

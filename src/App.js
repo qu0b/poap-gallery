@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch } from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { ROUTES } from './routes'
 import './scss/main.scss'
 import Gallery from './pages/gallery'
@@ -19,6 +19,7 @@ function App() {
     <div className="landing">
       <Header />
       <Switch>
+        <Redirect from={ROUTES.renderEvent} to={ROUTES.eventSlug} />
         <Route path={ROUTES.event}>
           <Tokens />
         </Route>

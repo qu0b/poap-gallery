@@ -1,0 +1,6 @@
+[[redirects]]
+  from = "/event/*"
+  to = "https://gallery-prerender.netlify.app/.netlify/functions/hello-world"
+  status = 200
+  force = true
+  conditions = { userAgent = ['Mozilla'] }
