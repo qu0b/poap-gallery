@@ -1,5 +1,5 @@
 [[redirects]]
   from = "/event/*"
-  to = "https://gallery-prerender.netlify.app/.netlify/functions/hello-world"
+  to = "/.netlify/functions/hello-world"
   status = 200
   force = true
