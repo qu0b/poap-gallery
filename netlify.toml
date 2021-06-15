@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/event/:path/"
-  to = "http://localhost:8888/.netlify/functions/render/:path/"
+  to = "https://gallery-prerender.netlify.app/.netlify/functions/render/:path/"
   status = 200
   force = false
 
