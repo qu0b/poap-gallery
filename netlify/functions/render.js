@@ -86,7 +86,15 @@ router.get('/', async (req, res) => {
     res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[4])
   }
 });
-app.use(morgan('combined'))
+app.use(morgan(function (tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms'
+  ].join(' ')
+}))
 app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*', '/'], router);  // path must route to lambda
 
 module.exports.handler = serverless(app);
