@@ -50,7 +50,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
   if (isBot) {
-    const event = await getEvent()
+    const event = await getEvent(req.baseUrl.split('/')[4])
     const { data } = event
     if (data) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
