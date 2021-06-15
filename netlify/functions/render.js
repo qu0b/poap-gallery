@@ -83,7 +83,7 @@ router.get('/', async (req, res) => {
       res.redirect('http://'+req.hostname)
     }
   } else {
-    res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[4])
+    res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[2])
   }
 });
 app.use(morgan(function (tokens, req, res) {
