@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/event/*"
-  to = "/.netlify/functions/render/:splat"
+  to = "https://gallery-prerender.netlify.app/.netlify/functions/render/:splat"
   status = 200
   force = true
 

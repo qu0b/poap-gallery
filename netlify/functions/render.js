@@ -81,13 +81,12 @@ router.get('/', async (req, res) => {
     } else {
       res.redirect('http://'+req.hostname)
     }
-    
   } else {
     res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[4])
   }
 });
 
-app.use('/.netlify/functions/render/*', router);  // path must route to lambda
+app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*'], router);  // path must route to lambda
 
 module.exports.handler = serverless(app);
 
