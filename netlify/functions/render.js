@@ -3,6 +3,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const axios = require('axios')
+const morgan = require('morgan')
 
 function dectectBot(userAgent) {
   const bots = [
@@ -85,7 +86,7 @@ router.get('/', async (req, res) => {
     res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[4])
   }
 });
-
+app.use(morgan('combined'))
 app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*', '/'], router);  // path must route to lambda
 
 module.exports.handler = serverless(app);
