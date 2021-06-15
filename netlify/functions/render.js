@@ -2,6 +2,7 @@
 const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
+const axios = require('axios')
 
 function dectectBot(userAgent) {
   const bots = [
@@ -37,21 +38,32 @@ function dectectBot(userAgent) {
   return false;
 }
 
+const getEvent = async (id) => {
+  try {
+    return await axios.get('https://api.poap.xyz/events/id/'+id)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const router = express.Router();
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
   if (isBot) {
+    const event = await getEvent()
+    const { data } = event
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.write(`
     <!doctype html>
     <head>
           <title>hola</title>
           <meta property="og:type" content="article">
-          <meta property="og:site_name" content="Quipu Market">
-          <meta property="og:title" content="$hola">
-          <meta property="og:description" content="hola">
+          <meta property="og:site_name" content="POAP Gallery">
+          <meta property="og:title" content="${data.name}">
+          <meta property="og:description" content="${data.description}">
+          <meta property="og:image" content="${data.image_url}">
           <meta property="og:image:height" content="200">
-          <meta property="og:image:width" content="300">
+          <meta property="og:image:width" content="200">
     </head>
     <body>
       <article>
