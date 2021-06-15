@@ -86,7 +86,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*'], router);  // path must route to lambda
+app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*', '/'], router);  // path must route to lambda
 
 module.exports.handler = serverless(app);
 
