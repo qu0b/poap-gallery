@@ -1,2 +1,0 @@
-/event/:path/   https://gallery-prerender.netlify.app/.netlify/functions/render/:path/  200 
-/*    /index.html   200
