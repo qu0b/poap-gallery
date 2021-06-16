@@ -50,15 +50,18 @@ const getEvent = async (id) => {
 const router = express.Router();
 router.get('/', async (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
+  const eventId = req.baseUrl.split('/')[2];
   if (isBot) {
-    const event = await getEvent(req.baseUrl.split('/')[2])
+    const event = await getEvent(eventId)
     const { data } = event
     if (data) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.write(`
       <!doctype html>
       <head>
-            <title>hola</title>
+            <title>POAP Gallery</title>
+            <meta name="title" content="${data.name}">
+            <meta name="description" content="${data.description}">
             <meta property="og:type" content="article">
             <meta property="og:site_name" content="POAP Gallery">
             <meta property="og:title" content="${data.name}">
@@ -66,24 +69,29 @@ router.get('/', async (req, res) => {
             <meta property="og:image" content="${data.image_url}">
             <meta property="og:image:height" content="200">
             <meta property="og:image:width" content="200">
+            <meta property="twitter:card" content="summary">
+            <meta property="twitter:site" content="@poapxyz">
+            <meta property="twitter:title" content="${data.name}">
+            <meta property="twitter:description" content="${data.description}">
+            <meta property="twitter:image" content="${data.image_url}">
       </head>
       <body>
         <article>
           <div>
-            <h2>hola</h2>
+            <h1>${data.name}</h1>
           </div>
           <div>
-            <p>hola</p>
+            <p>${data.description}</p>
           </div>
         </article>
       </body>
       </html>`);
       res.end();
     } else {
-      res.redirect('http://'+req.hostname)
+      res.redirect('http://' + req.hostname)
     }
   } else {
-    res.redirect('http://'+req.hostname+'/r/event/'+ req.baseUrl.split('/')[2])
+    res.redirect('http://' + req.hostname + '/r/event/' + eventId)
   }
 });
 app.use(morgan(function (tokens, req, res) {

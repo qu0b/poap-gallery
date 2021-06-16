@@ -25,3 +25,43 @@ cd
 yarn
 cp .env.template .env // Add your own REACT_APP_RPC_PROVIDER_URL
 ```
+
+## How to run with functions localy
+### Link to configuration of Netlify
+* https://docs.netlify.com/cli/get-started/#get-started-with-netlify-dev
+
+
+### Files to change before to start running locally 
+#### netlify.toml
+From this
+```
+[[redirects]]
+  from = "/event/*"
+  to = "https://gallery-prerender.netlify.app/.netlify/functions/render/:route"
+  status = 200
+  force = true
+```
+To this
+```
+[[redirects]]
+  from = "/event/*"
+  to = "/.netlify/functions/render/:route"
+  status = 200
+  force = true
+```
+
+#### render.js
+From this
+```
+const eventId = req.baseUrl.split('/')[2];
+```
+To this
+```
+const eventId = req.baseUrl.split('/')[4]
+```
+### Commands to run
+```
+npm install netlify-cli -g
+netlify init
+netlify dev
+```
