@@ -3,7 +3,45 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const axios = require('axios')
-const morgan = require('morgan')
+const morgan = require('morgan');
+
+const XDAI_SUBGRAPH_URL = process.env.REACT_APP_XDAI_SUBGRAPH_URL;
+const MAINNET_SUBGRAPH_URL = process.env.REACT_APP_MAINNET_SUBGRAPH_URL;
+
+async function getLayerTokens(eventId, url) {
+  const res = await axios.post(url, JSON.stringify({
+      query: `
+        {
+          event(id: "${eventId}"){
+            tokenCount
+          }
+        }
+        `
+		}));
+	return res;
+}
+
+async function getxDaiTokens(eventId) {
+  return getLayerTokens(eventId, XDAI_SUBGRAPH_URL);
+}
+
+async function getMainnetTokens(eventId) {
+	return getLayerTokens(eventId, MAINNET_SUBGRAPH_URL);
+}
+
+async function fulfillWithTimeLimit(timeLimit, task, failureValue){
+  let timeout;
+  const timeoutPromise = new Promise((resolve, reject) => {
+      timeout = setTimeout(() => {
+          resolve(failureValue);
+      }, timeLimit)
+  });
+  const response = await Promise.race([task, timeoutPromise]);
+  if(timeout){ //the code works without this but let's be safe and clean up the timeout
+      clearTimeout(timeout);
+  }
+  return response;
+}
 
 function dectectBot(userAgent) {
   const bots = [
@@ -51,9 +89,19 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
   const eventId = req.baseUrl.split('/')[2];
+  const xdai = await fulfillWithTimeLimit(1000, getxDaiTokens(eventId), null);
+  const main = await fulfillWithTimeLimit(1000, getMainnetTokens(eventId), null);
+  let tokenCount = 0;
+  if (xdai !== null) {
+    tokenCount+=parseInt(xdai.data.data.event.tokenCount, 10)
+  }
+  if (main !== null) {
+    tokenCount+=parseInt(main.data.data.event.tokenCount, 10)
+  }
   if (isBot) {
-    const event = await getEvent(eventId)
-    const { data } = event
+    const event = await getEvent(eventId);
+    const { data } = event;
+
     if (data) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.write(`
@@ -72,7 +120,7 @@ router.get('/', async (req, res) => {
             <meta property="twitter:card" content="summary">
             <meta property="twitter:site" content="@poapxyz">
             <meta property="twitter:title" content="${data.name}">
-            <meta property="twitter:description" content="${data.description}">
+            <meta property="twitter:description" content="${data.description + '  Total Suply: ' + tokenCount}">
             <meta property="twitter:image" content="${data.image_url}">
       </head>
       <body>
@@ -103,7 +151,7 @@ app.use(morgan(function (tokens, req, res) {
     tokens['response-time'](req, res), 'ms'
   ].join(' ')
 }))
-app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*', '/event/*'], router);  // path must route to lambda
+app.use(['/.netlify/functions/render/*', '/.netlify/functions/render/','/.netlify/functions/render/event/*', '/event/*', '/render/*'], router);  // path must route to lambda
 
 module.exports.handler = serverless(app);
 
