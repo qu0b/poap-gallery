@@ -89,18 +89,30 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   const isBot = dectectBot(req.headers['user-agent']);
   const eventId = req.baseUrl.split('/')[2];
-  const xdai = await fulfillWithTimeLimit(1000, getxDaiTokens(eventId), null);
-  const main = await fulfillWithTimeLimit(1000, getMainnetTokens(eventId), null);
-  let tokenCount = 0;
-  if (xdai !== null) {
-    tokenCount+=parseInt(xdai.data.data.event.tokenCount, 10)
-  }
-  if (main !== null) {
-    tokenCount+=parseInt(main.data.data.event.tokenCount, 10)
-  }
+
   if (isBot) {
     const event = await getEvent(eventId);
+
     const { data } = event;
+
+    const xdai = await fulfillWithTimeLimit(1000, getxDaiTokens(eventId), null);
+
+    const main = await fulfillWithTimeLimit(1000, getMainnetTokens(eventId), null);
+
+    let tokenCount = 0;
+    let description = data.description;
+
+    if (xdai !== null) {
+      tokenCount+=parseInt(xdai.data.data.event.tokenCount, 10)
+    }
+
+    if (main !== null) {
+      tokenCount+=parseInt(main.data.data.event.tokenCount, 10)
+    }
+
+    if (tokenCount > 0) {
+      description+= + '  Total Suply: ' + tokenCount;
+    }
 
     if (data) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -120,7 +132,7 @@ router.get('/', async (req, res) => {
             <meta property="twitter:card" content="summary">
             <meta property="twitter:site" content="@poapxyz">
             <meta property="twitter:title" content="${data.name}">
-            <meta property="twitter:description" content="${data.description + '  Total Suply: ' + tokenCount}">
+            <meta property="twitter:description" content="${description}">
             <meta property="twitter:image" content="${data.image_url}">
       </head>
       <body>
@@ -129,7 +141,7 @@ router.get('/', async (req, res) => {
             <h1>${data.name}</h1>
           </div>
           <div>
-            <p>${data.description}</p>
+            <p>${description}</p>
           </div>
         </article>
       </body>
