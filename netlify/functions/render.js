@@ -116,7 +116,7 @@ router.get('/', async (req, res) => {
     }
 
     if (tokenCount > 0) {
-      description = description + '/n Total Supply: ' + tokenCount;
+      description = description + '<br />Supply: ' + tokenCount;
     }
 
     if (data) {
