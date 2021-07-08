@@ -95,6 +95,10 @@ router.get('/', async (req, res) => {
 
     const { data } = event;
 
+    console.log(XDAI_SUBGRAPH_URL)
+
+    console.log(MAINNET_SUBGRAPH_URL)
+    
     const xdai = await fulfillWithTimeLimit(1000, getxDaiTokens(eventId), null);
 
     const main = await fulfillWithTimeLimit(1000, getMainnetTokens(eventId), null);
