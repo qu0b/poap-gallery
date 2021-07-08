@@ -100,9 +100,9 @@ router.get('/', async (req, res) => {
     const main = await fulfillWithTimeLimit(1000, getMainnetTokens(eventId), null);
 
     
-    console.log(xdai)
+    console.log(xdai.data.data.event)
 
-    console.log(main)
+    console.log(main.data.data.event)
 
     let tokenCount = 0;
     let description = data.description;
@@ -116,7 +116,7 @@ router.get('/', async (req, res) => {
     }
 
     if (tokenCount > 0) {
-      description+= + '  Total Suply: ' + tokenCount;
+      description = description + '  Total Suply: ' + tokenCount;
     }
 
     if (data) {
