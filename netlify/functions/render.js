@@ -126,11 +126,11 @@ router.get('/', async (req, res) => {
       <head>
             <title>POAP Gallery</title>
             <meta name="title" content="${data.name}">
-            <meta name="description" content="${data.description}">
+            <meta name="description" content="${description}">
             <meta property="og:type" content="article">
             <meta property="og:site_name" content="POAP Gallery">
             <meta property="og:title" content="${data.name}">
-            <meta property="og:description" content="${data.description}">
+            <meta property="og:description" content="${description}">
             <meta property="og:image" content="${data.image_url}">
             <meta property="og:image:height" content="200">
             <meta property="og:image:width" content="200">
