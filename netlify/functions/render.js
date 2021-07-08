@@ -102,11 +102,11 @@ router.get('/', async (req, res) => {
     let tokenCount = 0;
     let description = data.description;
 
-    if (xdai !== null) {
+    if (xdai != null) {
       tokenCount+=parseInt(xdai.data.data.event.tokenCount, 10)
     }
 
-    if (main !== null) {
+    if (main != null) {
       tokenCount+=parseInt(main.data.data.event.tokenCount, 10)
     }
 
