@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Arrow from '../assets/images/angle_down.svg';
 
 export default function Dropdown({title, options, defaultOption, onClickOption}) {
   
@@ -22,9 +22,10 @@ export default function Dropdown({title, options, defaultOption, onClickOption})
   }
 
   return (
-    <div className="select" style={{}}
+    <div className="select" style={{position: 'relative'}}
       onMouseLeave={() => setDisplayMenu(false)}
       >
+      <div style={{position: 'absolute', top: '7px', right: '5px'}}><img src={Arrow} alt='select arrow' /></div>
       <div className="select-button"
         onClick={toggleDisplayMenu}
         onMouseEnter={() => setDisplayMenu(true)}
@@ -39,7 +40,6 @@ export default function Dropdown({title, options, defaultOption, onClickOption})
         </div>)
         : null
       }
-
     </div>
 
   );

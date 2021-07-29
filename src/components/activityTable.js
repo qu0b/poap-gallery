@@ -76,7 +76,7 @@ export default function ActivityTable() {
           <div className="activity-table-title">POAP Gallery</div>
           <div className="activity-table-subtitle">Explore POAP.gallery and enjoy the adventure through the digital collectibles universe.</div>
         </div>
-        <Transfers loading={loading} transfers={transfers}></Transfers>
+        <Transfers loading={loading} transfers={transfers}/>
       </div>
       <div style={{display: "flex", justifyContent: "center", margin: '.5rem 0'}}><Link to="/activity">
         <FontAwesomeIcon icon={faClock} />
@@ -93,7 +93,7 @@ function Transfer({transfer}) {
     <div className='transfer'>
       {width > 480 &&
         <>
-        <div className='dashed-line' style={{height: `${transfer.opacity === 0.3 ? '0' : 'inherit'}`}}></div>
+        <div className='dashed-line' style={{height: `${transfer.opacity === 0.3 ? '0' : 'inherit'}`}}/>
         <img style={{width: `37px`, zIndex: 2}} src={type==='Migration'? MigrateIcon: type==='Claim'? ClaimIcon: type==='Burn'? BurnIcon:TransferIcon} alt={type} />
         </>
       }

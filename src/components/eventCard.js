@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faCoins, faGlobe, faHashtag, faLaptop, faPaperPlane, faClock, faFire } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faGlobe, faHashtag, faLaptop, faClock, faFire } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
-import ReactTooltip from 'react-tooltip';
 import { MultiLineEllipsis } from './multiLineEllipsis';
 import { Pill } from './pill';
 import { useWindowWidth } from '@react-hook/window-size/throttled';
 import ReactModal from 'react-modal';
+import Power from '../assets/images/power.svg';
+import Transfers from '../assets/images/transfers.svg';
+import Supply from '../assets/images/supply.svg';
 
 export function EventCard({ event, size = 's', type = '', power = 0}) {
   const width = useWindowWidth();
@@ -93,7 +95,6 @@ function Content({type, width, size, event, power}) {
 
                 {/* title */}
                 <h3
-                    data-tip={event.name}
                     className="h4 content-title"
                     style={{
                         fontSize: '1rem',
@@ -102,27 +103,27 @@ function Content({type, width, size, event, power}) {
                         overflowWrap: 'anywhere',
                     }}>
                     <MultiLineEllipsis text={event.name} lines={2} maxLengthPerLine={(size === 'l' ? (width >= 768 ? 403 : width >= 480 ? 303 : 203) : size === 'm' ? 262 : 229)}/>
-                </h3>{size === 'l' && <ReactTooltip effect='solid' />}
+                </h3>
 
                 {/* description */}
                 {
-                    size === 'l' ?
-                        <div className='content-description'>
-                            <div className='content-description-main'>{nl2br(event.description)}</div>
-                            <span onClick={() => window.open(event.event_url, '_blank')} className='content-description-url ellipsis' target="_blank"  rel="noopener noreferrer">{event.event_url}</span>
-                        </div>
-                        :
-                        /* id */
-                        <div className='content-id'>
-                            <FontAwesomeIcon style={{ width: '1rem', marginRight: '.2rem' }} icon={faHashtag} />
-                            {event.id}
-                        </div>
+                  size === 'l' ?
+                      <div className='content-description'>
+                        <div className='content-description-main'>{nl2br(event.description)}</div>
+                        <span onClick={() => window.open(event.event_url, '_blank')} className='content-description-url ellipsis' target="_blank"  rel="noopener noreferrer">{event.event_url}</span>
+                      </div>
+                      :
+                      /* id */
+                      <div className='content-id'>
+                        <FontAwesomeIcon style={{ width: '0.5rem' }} icon={faHashtag} />
+                        {event.id}
+                      </div>
                 }
 
                 {/* time and place */}
                 <div className="content-time-place">
-                    <Pill style={{ minWidth: '110px'}} text={event.start_date} icon={faCalendar} />
-                    <Pill className="ellipsis" style={{ minWidth: '110px'}} tooltip={true}
+                    <Pill style={{ minWidth: '100px'}} text={event.start_date} icon={faCalendar} />
+                    <Pill className="ellipsis" tooltip={true}
                           icon={event.city ? faGlobe : faLaptop}
                           text={event.city ? event.city : 'Virtual event '}/>
                 </div>
@@ -140,22 +141,24 @@ function Content({type, width, size, event, power}) {
                 {/* supply y transfers */}
                 <div>
                     <div className="title">
-                        <FontAwesomeIcon style={{ width: '1rem', marginRight: '.4rem' }} icon={faCoins} />{'SUPPLY'}
+                        <img style={{ width: '0.7rem', marginRight: '.4rem' }} src={Supply} alt='Supply' />{'SUPPLY'}
                     </div>
+                  <span className='supply-content' style={{width: 'fit-content'}}>
                     {tokenCount === undefined ? ' -' : tokenCount === 0 ? ' None Claimed' : tokenCount}
+                  </span>
                 </div>
                 {
                     size === 'l' &&
                     <div>
                         <div className="title">
-                            <FontAwesomeIcon style={{ width: '1rem', marginRight: '.4rem' }} icon={faFire} />{'POWER'}
+                            <img style={{ width: '0.7rem', marginRight: '.4rem' }} src={Power} alt='Power' />{'POWER'}
                         </div>
                         {power}
                     </div>
                 }
                 <div>
                     <div className="title">
-                        <FontAwesomeIcon style={{ width: '1rem', marginRight: '.4rem' }} icon={faPaperPlane} />{'TRANSFERS'}
+                        <img style={{ width: '0.7rem', marginRight: '.4rem' }} src={Transfers} alt='Transfers' />{'TRANSFERS'}
                     </div>
                     {transferCount}
                 </div>

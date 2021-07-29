@@ -17,6 +17,7 @@ import { Foliage } from '../components/foliage';
 import dayjs from 'dayjs';
 import { shrinkAddress } from '../utilities/utilities';
 import { useWindowWidth } from '@react-hook/window-size/throttled';
+import OpenLink from '../assets/images/openLink.svg'
 
 const GRAPH_LIMIT = 1000;
 
@@ -85,13 +86,11 @@ export function Event() {
     _csv_data.push(['ID', 'Collection', 'ENS', 'Minting Date', 'Tx Count', 'Power']);
     for (let i = 0; i < tokens.length; i++) {
       _data.push(width > 480 ? {
-        col1:  (<a href={"https://app.poap.xyz/token/" + tokens[i].id} target="_blank" rel="noopener noreferrer">{'#'}{tokens[i].id}</a>) ,
-        col2: (<a href={"https://app.poap.xyz/scan/" + tokens[i].owner.id} target="_blank" rel="noopener noreferrer" data-tip='View Collection in POAP.scan'> <ReactTooltip effect='solid' />
-          {width > 768
+        col1:  (<ExternalLinkCell url={"https://app.poap.xyz/token/" + tokens[i].id} content={`#${tokens[i].id}`}/>) ,
+        col2: (<ExternalLinkCell url={"https://app.poap.xyz/scan/" + tokens[i].owner.id} tooltip-text='View Collection in POAP.scan' content={width > 768
             ? <span>{shrinkAddress(tokens[i].owner.id, 20)}</span>
             : <span>{shrinkAddress(tokens[i].owner.id, 10)}</span>
-          }
-        </a>),
+        }/>),
         col3: new Date(tokens[i].created * 1000).toLocaleDateString(),
         col4: tokens[i].transferCount,
         col5: tokens[i].owner.tokensOwned,
@@ -171,12 +170,12 @@ export function Event() {
         <Helmet>
           <title>POAP Gallery - Event</title>
           <link rel="canonical" href={"https://poap.gallery/event/" + eventId}/>
-          <meta property="og:url" content={"https://poap.gallery/event/" + eventId }></meta>
-          <meta property="og:title" content="POAP Gallery - Event"></meta>
+          <meta property="og:url" content={"https://poap.gallery/event/" + eventId}/>
+          <meta property="og:title" content="POAP Gallery - Event"/>
         </Helmet>
         <Foliage />
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <Loader></Loader>
+          <Loader />
         </div>
       </main>
     )
@@ -188,14 +187,14 @@ export function Event() {
         <Helmet>
           <title>POAP Gallery - Event</title>
           <link rel="canonical" href={"https://poap.gallery/event/" + eventId}/>
-          <meta property="og:url" content={"https://poap.gallery/event/" + eventId }></meta>
-          <meta property="og:title" content="POAP Gallery - Event"></meta>
+          <meta property="og:url" content={"https://poap.gallery/event/" + eventId}/>
+          <meta property="og:title" content="POAP Gallery - Event"/>
         </Helmet>
         <Foliage />
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'column', margin: '0 auto', textAlign: 'center'}}>
           <h2>{errorEvent || 'Token not found'}</h2>
           <div >
-            <img alt="warning sign" style={{maxWidth: '30rem'}} src="/icons/warning.svg"></img>
+            <img alt="warning sign" style={{maxWidth: '30rem'}} src="/icons/warning.svg"/>
           </div>
         </div>
       </main>
@@ -207,8 +206,8 @@ export function Event() {
       <Helmet>
         <title>POAP Gallery - Event</title>
         <link rel="canonical" href={"https://poap.gallery/event/" + eventId}/>
-        <meta property="og:url" content={"https://poap.gallery/event/" + eventId }></meta>
-        <meta property="og:title" content="POAP Gallery - Event"></meta>
+        <meta property="og:url" content={"https://poap.gallery/event/" + eventId}/>
+        <meta property="og:title" content="POAP Gallery - Event"/>
       </Helmet>
       <Foliage />
       <div className="container">
@@ -238,26 +237,69 @@ export function Event() {
             target="_blank"
             className="btn"
             style={{
-              fontSize: '0.9rem', width: 'fit-content',
-              boxShadow: 'none', minHeight: 'fit-content', minWidth: 'auto',
+              width: 'fit-content',
+              minWidth: 'auto',
               marginBottom: '0px',
-              marginLeft: 'auto'
+              marginLeft: 'auto',
+              padding: '12px 32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 6px 18px 0 #6534FF4D',
             }}
             data={csv_data}
           >
-            Download CSV
+            <span>Download CSV</span>
           </CSVLink>
         </div>
         <div className='table-container'>
           {
             width > 480
-            ? <CreateTable event={event} loading={loadingEvent !== 'succeeded'} columns={columns} data={data} pageCount={pageCount} ></CreateTable>
-            : <CreateMobileTable event={event} loading={loadingEvent !== 'succeeded'} columns={mobileColumns} data={data} pageCount={pageCount} ></CreateMobileTable>
+            ? <CreateTable event={event} loading={loadingEvent !== 'succeeded'} columns={columns} data={data} pageCount={pageCount} />
+            : <CreateMobileTable event={event} loading={loadingEvent !== 'succeeded'} columns={mobileColumns} data={data} pageCount={pageCount} />
           }
         </div>
       </div>
     </main>
   );
+}
+
+function ExternalLinkCell({url, tooltipText = null, content}) {
+  const [isHovering, setIsHovering] = useState(false)
+  const [isHoveringLink, setIsHoveringLink] = useState(false)
+  let hoverDeactivateTimeout = null;
+  let hoverLinkDeactivateTimeout = null;
+  useEffect(()=>{
+    return () => {
+      // Clear timeouts on unmount
+      clearTimeout(hoverDeactivateTimeout)
+      clearTimeout(hoverLinkDeactivateTimeout)
+    }
+  })
+  return (
+    <><a href={url} target="_blank" rel="noopener noreferrer"
+       data-tip={tooltipText}
+       onMouseEnter={() => {setIsHovering(true)}}
+       onMouseLeave={() => {hoverDeactivateTimeout = setTimeout(() => {
+         if (!isHoveringLink) setIsHovering(false)
+       }, 500)}}
+       style={{position: 'relative', width: 27}}
+    >
+      {content}
+       {
+         isHovering &&
+         <><div className='external-link'
+              data-tip='Open external link'
+              onMouseEnter={() => {clearTimeout(hoverDeactivateTimeout); clearTimeout(hoverLinkDeactivateTimeout); setIsHoveringLink(true)}}
+              onMouseLeave={() => {hoverLinkDeactivateTimeout = setTimeout(() => {
+                setIsHoveringLink(false)
+                setIsHovering(false)
+              }, 500)}}
+         >
+           <img src={OpenLink} alt={'Open external link'} />
+         </div><ReactTooltip effect='solid'/></> }
+   </a><ReactTooltip effect='solid' /></>
+ );
 }
 
 function CreateTable({loading, pageCount: pc, columns, data, event}) {
@@ -294,7 +336,7 @@ function CreateTable({loading, pageCount: pc, columns, data, event}) {
             headerGroup.headers.map((column, idx) => (
               // Apply the header cell props
               (idx === 0 || idx === 3 || idx === 4)
-                ? <th key={idx} {...column.getHeaderProps(column.getSortByToggleProps())}>
+                ? <th key={idx} {...column.getHeaderProps(column.getSortByToggleProps({title: undefined}))}>
                   {// Render the header
                   column.render('Header')}{' '}
                   {column.isSorted

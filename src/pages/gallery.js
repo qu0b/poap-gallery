@@ -10,6 +10,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 import FailedSearch from '../assets/images/failed-search.svg'
 import Dropdown from '../components/dropdown';
+import {faSearch} from "@fortawesome/free-solid-svg-icons/faSearch";
+import {useWindowWidth} from "@react-hook/window-size";
 
 export default function Gallery() {
   const dispatch = useDispatch()
@@ -26,7 +28,7 @@ export default function Gallery() {
 
   const [items, setItems] = useState(events)
   const [search, setSearch] = useState(undefined);
-  const [length, setLength] = useState(50);
+  const [length, setLength] = useState(40);
 
   const orderTypeOptions = ['Date', 'Id', 'City', 'Holders', 'Transfers']
   const [orderType, setOrderType] = useState(orderTypeOptions[0]);
@@ -34,6 +36,8 @@ export default function Gallery() {
   const [orderDirection, setOrderDirection] = useState(orderDirectionOptions[0]);
 
   const [searchValue, setSearchValue] = useState('');
+
+  const width = useWindowWidth();
 
   useEffect(() => {
     setItems(events)
@@ -145,12 +149,12 @@ export default function Gallery() {
       <Helmet>
         <title>POAP Gallery - Home</title>
         <link rel="canonical" href="https://poap.gallery"/>
-        <meta property="og:url" content="https://poap.gallery"></meta>
-        <meta property="og:title" content="POAP Gallery - Home"></meta>
+        <meta property="og:url" content="https://poap.gallery"/>
+        <meta property="og:title" content="POAP Gallery - Home"/>
       </Helmet>
       <div className="container">
-        <div className="gradient-background"></div>
-        <div className='background'></div>
+        <div className="gradient-background"/>
+        <div className='background'/>
         <div className='content'>
           <ActivityTable />
           <div className="gallery-title">Explore</div>
@@ -160,7 +164,9 @@ export default function Gallery() {
               <div style={{ display: 'flex', flexDirection: 'row'}}>
                 <input onChange={handleSearch} type="text" value={searchValue} placeholder="Search..." maxLength={20} />{' '}
                 {
-                  searchValue.length ? <FontAwesomeIcon icon={faTimesCircle} onClick={eraseSearch} style={{ position: 'relative', fontSize: '1.5rem', right: 37, top: 13, cursor: 'pointer', color: '#C4CAE8' }} /> : null
+                  searchValue.length
+                      ? <FontAwesomeIcon icon={faTimesCircle} style={{ position: 'relative', fontSize: '1.5rem', right: 37, top: 8, cursor: 'pointer', color: '#C4CAE8' }} onClick={eraseSearch} />
+                      : <FontAwesomeIcon icon={faSearch}      style={{ position: 'relative', fontSize: '1rem', right: 27, top: 11, color: '#C4CAE8' }}/>
                 }
               </div>
               {
@@ -168,10 +174,10 @@ export default function Gallery() {
                 <span
                   style={{
                     position: 'absolute',
-                    top: '108%',
-                    right: '0',
-                    color: '#66666688',
-                    fontSize: '.8rem',
+                    top: `${width > 590 && width < 768 ? '120%' : '200%'}`,
+                    left: '0',
+                    color: '#8492CE',
+                    fontSize: '1rem',
                   }}
                 >
                   {search.length} result(s)
@@ -270,7 +276,7 @@ export default function Gallery() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
         </div>
           {!search ?
-            <button style={{maxWidth: 1120, margin: '0 auto', marginTop: '40px'}} className='btn' onClick={() => {
+            <button  className='btn' onClick={() => {
                 if (items && items.length) {
                   if (length + 20 < items.length) {
                     setLength(length + 20);
@@ -278,6 +284,19 @@ export default function Gallery() {
                     setLength(items.length);
                   }
                 }
+              }}
+              style={{
+                marginTop: '40px',
+                width: 'fit-content',
+                minWidth: 'auto',
+                marginBottom: '0px',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                padding: '12px 32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 6px 18px 0 #6534FF4D'
               }}>
               Load more
             </button> : null

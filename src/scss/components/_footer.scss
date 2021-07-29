@@ -34,22 +34,33 @@
 
 .footer-grid {
   display: grid;
-  grid-template-rows: 200px 40px;
+  grid-template-rows: 217px 40px;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     'home-link    ecosystem    join-links'
     'eth-branding eth-branding eth-branding';
-  .ecosystem, .join-links {
-    padding: 10%;
-    padding-top: 5%;
+  .ecosystem {
+    margin: 20px 0 0 0;
+    @media (min-width: $bp-m) {
+      margin: 50px 0 50px 0;
+    }
+  }
+  .join-links {
+    margin: 0;
+    @media (min-width: $bp-m) {
+      margin: 50px 50px 50px 0;
+    }
   }
   .home-link {
     grid-area: home-link;
     width: fit-content;
     height: fit-content;
-    margin: 5%;
+    margin: 0;
+    @media (min-width: $bp-m) {
+      margin: 50px 0 50px 50px;
+    }
     img {
-      max-width: 70%;
+      max-width: 48%;
     }
   }
   .ecosystem {
@@ -66,17 +77,19 @@
     @media (min-width: $bp-m) {
       grid-template-areas:
         'title title title'
-        'a     b'
-        'c     d'
-        'e     f'
-        'g     h';
+        'a     b     c'
+        'd     e     f'
+        'g     h     i';
     }
     h4 {
       grid-area: title;
+      font-family: 'Comfortaa';
       color: $color-primary;
+      font-weight: 600;
     }
     a {
       color: $grayscale4;
+      font-size: 0.875rem;
       &:hover {
         color: $color-primary;
       }
@@ -117,6 +130,8 @@
     }
     h4 {
       color: $color-primary;
+      font-family: 'Comfortaa';
+      font-weight: 600;
     }
 
     .social-icons {
@@ -145,13 +160,12 @@
     background-color: #f7f7f7;
   }
   @media (max-width: $bp-m) {
-    grid-template-rows: 2.3fr 1fr 2fr 40px;
-    grid-template-columns: 1fr;
+    grid-template-rows: 2.3fr 1fr 40px;
+    grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      'ecosystem'
-      'join-links'
-      'home-link'
-      'eth-branding';
+      'ecosystem    join-links'
+      'home-link    home-link'
+      'eth-branding eth-branding';
     .ecosystem, .join-links {
       padding: 3%;
       justify-content: center;
@@ -171,8 +185,17 @@
       display: flex;
       justify-content: center;
       justify-self: center;
-      margin: 10%;
+      margin: 4%;
     }
+  }
+  @media (max-width: $bp-sw) {
+    grid-template-rows: 2.3fr 1fr 1fr 40px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'ecosystem'
+      'join-links'
+      'home-link'
+      'eth-branding';
   }
 }
 

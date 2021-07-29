@@ -84,8 +84,8 @@ export default function Activity() {
       <Helmet>
         <title>POAP Gallery - Activity</title>
         <link rel="canonical" href="https://poap.gallery/activity"/>
-        <meta property="og:url" content="https://poap.gallery/activity"></meta>
-        <meta property="og:title" content="POAP Gallery - Activity"></meta>
+        <meta property="og:url" content="https://poap.gallery/activity"/>
+        <meta property="og:title" content="POAP Gallery - Activity"/>
       </Helmet>
       <Foliage />
       <div className="activityContainer container" style={{
@@ -99,7 +99,7 @@ export default function Activity() {
         </div>
 
         <div className='table-container' style={{ marginTop: 50}}>
-          <CreateTable loading={loading} transfers={transfers} ></CreateTable>
+          <CreateTable loading={loading} transfers={transfers} />
         </div>
 
       </div>
@@ -226,7 +226,7 @@ function CreateTable({transfers, loading}) {
   const tfers = []
   for (let i = 0; i < transfers.length; i++) {
     const t = transfers[i];
-    tfers.push(<TokenRow key={t.id} transfer={t} dateFormat={dateFormat}></TokenRow>)
+    tfers.push(<TokenRow key={t.id} transfer={t} dateFormat={dateFormat}/>)
   }
   if (tfers && tfers.length) {
     tfers.push(
@@ -245,15 +245,15 @@ function CreateTable({transfers, loading}) {
               <th>POAP ID</th>
               <th>Collection</th>
               <th>TX count <FontAwesomeIcon icon={faQuestionCircle} data-tip="The amount of transactions this POAP has done since it the day it been claimed." /><ReactTooltip effect='solid'/> </th>
-              <th>Minting Date <FontAwesomeIcon icon={faDotCircle} onClick={toggleDateFormat} data-tip="Toggle date format" style={{ width: '1rem', marginRight: '.2rem', cursor: 'pointer' }} /><ReactTooltip/></th>
+              <th>Minting Date <FontAwesomeIcon icon={faDotCircle} onClick={toggleDateFormat} data-tip="Toggle date format" style={{ width: '1rem', marginRight: '.2rem', cursor: 'pointer' }} /><ReactTooltip effect='solid'/></th>
             </tr>
             : <tr>
-              <th style={{width: '100%'}}></th>
+              <th style={{width: '100%'}}/>
             </tr>
           }
         </thead>
         <tbody>
-          {loading ? <tr style={{height: '600px', width: 'inherit'}}><td className="loading" colSpan="6"></td></tr> : tfers && tfers.length? tfers : (<tr><td style={{textAlign: 'center'}} colSpan="7">No Tokens Transferred</td></tr>)}
+          {loading ? <tr style={{height: '600px', width: 'inherit'}}><td className="loading" colSpan="6"/></tr> : tfers && tfers.length? tfers : (<tr><td style={{textAlign: 'center'}} colSpan="7">No Tokens Transferred</td></tr>)}
         </tbody>
       </table>
     </div>
