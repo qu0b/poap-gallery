@@ -45,7 +45,7 @@ export const MultiLineEllipsis = ({text='', linesAmount, maxLengthPerLine}) => {
   
   return (
     <div data-for={text} data-tip={text} style={{display: 'flex', flexDirection: 'column'}}>
-      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left: -1000, top: 200}} ref={title5}>
+      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left:-1000, top: 200}} ref={title5}>
         {text}</span>
       <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left: 32-1000, top: 150}} ref={title4}>
         {text.substr(0, text.substr(0,(maxLengthPerLine>=400 ? 40 : maxLengthPerLine>=300 ? 30 : 20)).lastIndexOf(' '))}</span>
