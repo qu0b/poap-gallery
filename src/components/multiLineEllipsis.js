@@ -45,15 +45,15 @@ export const MultiLineEllipsis = ({text='', linesAmount, maxLengthPerLine}) => {
   
   return (
     <div data-for={text} data-tip={text} style={{display: 'flex', flexDirection: 'column'}}>
-      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left:-1000, top: 200}} ref={title5}>
+      <span style={{width: 'fit-content', position: 'fixed', color: 'transparent', border: 'none', left:-1000, top: 0}} ref={title5}>
         {text}</span>
-      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left: 32-1000, top: 150}} ref={title4}>
+      <span style={{width: 'fit-content', position: 'fixed', color: 'transparent', border: 'none', left: 32-1000, top: 0}} ref={title4}>
         {text.substr(0, text.substr(0,(maxLengthPerLine>=400 ? 40 : maxLengthPerLine>=300 ? 30 : 20)).lastIndexOf(' '))}</span>
-      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left: 32-1000, top: 100}} ref={title3}>
+      <span style={{width: 'fit-content', position: 'fixed', color: 'transparent', border: 'none', left: 32-1000, top: 0}} ref={title3}>
         {text.substr(0, text.substr(0,(maxLengthPerLine>=400 ? 35 : maxLengthPerLine>=300 ? 25 : 15)).lastIndexOf(' '))}</span>
-      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left: 32-1000, top: 50}} ref={title2}>
+      <span style={{width: 'fit-content', position: 'fixed', color: 'transparent', border: 'none', left: 32-1000, top: 0}} ref={title2}>
         {text.substr(0, text.substr(0,(maxLengthPerLine>=400 ? 30 : maxLengthPerLine>=300 ? 20 : 10)).lastIndexOf(' '))}</span>
-      <span style={{width: 'fit-content', position: 'absolute', color: 'red', border: '1px solid red', left: 32-1000, top: 0}} ref={title1}>
+      <span style={{width: 'fit-content', position: 'fixed', color: 'transparent', border: 'none', left: 32-1000, top: 0}} ref={title1}>
         {text.substr(0, text.substr(0,(maxLengthPerLine>=400 ? 20 : maxLengthPerLine>=300 ? 10 : 5)).lastIndexOf(' '))}</span>
       <span>{text.substr(0, titleLength)}</span>
       <span className='ellipsis' style={{width: 'fit-content', maxWidth: '100%', placeSelf: `${maxLengthPerLine >= 400? 'start' : 'center'}`}} ref={secondLine}>{text.substr(titleLength)}</span>
