@@ -30,7 +30,9 @@ export async function getEnsData(ownerIds){
         return (namehash.normalize(name) === name && name !== '') && name
       } catch (e) {
         if (name && name.length) {
-          toast.error(`Couldn't parse ENS name '${name}'.`, toastInfoOptions)
+          // FixMe: We need to somehow notify the user that this ens name has some characters from more
+          //  than one Unicode alphabet, like etherscan does.
+          return name
         }
         return false
       }
