@@ -25,18 +25,8 @@ export async function getEnsData(ownerIds){
   for (let i = 0; i < chunked.length; i++) {
     const chunk = chunked[i];
     let names = await ReverseRecords.getNames(chunk)
-    const validNames = names.map(name => {
-      try {
-        return (namehash.normalize(name) === name && name !== '') && name
-      } catch (e) {
-        if (name && name.length) {
-          // FixMe: We need to somehow notify the user that this ens name has some characters from more
-          //  than one Unicode alphabet, like etherscan does.
-          return name
-        }
-        return false
-      }
-    } )
+    const validNames = names.map(name => name !== '' && name)
+    console.log("Toast")
     allnames = _.concat(allnames, validNames);
   }
   return allnames
