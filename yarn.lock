@@ -1148,25 +1148,25 @@
   resolved "https://registry.npmjs.org/@csstools/normalize.css/-/normalize.css-10.1.0.tgz"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@datadog/browser-core@4.11.1":
-  version "4.11.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-core/-/browser-core-4.11.1.tgz"
-  integrity sha512-0Q2n7bfqsJW4cNh8uQPfilKVWSR/xvFpsEZYhNodxzU0lQupUg2hz/E2tefgSmjojiMzMWX7KUwkEe3qf9Z4CQ==
+"@datadog/browser-core@4.23.3":
+  version "4.23.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.23.3.tgz#843f6787eff5a4d06bb0f9eb93eb54ece687e631"
+  integrity sha512-XaZTE9M8mngVaPLZmZAlwY+OWxGh1fQwaIMezsbwUreK3Itnz0BgGU9UBksPQXFRvQysV2/BDtV0nonu++Psxw==
 
-"@datadog/browser-rum-core@4.11.1":
-  version "4.11.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-rum-core/-/browser-rum-core-4.11.1.tgz"
-  integrity sha512-9P45w3ISnsF+FSMOAvUiwzbPFg/KDPmlzmjEA8iG97g/12W0OpF8wbNYaQYebf+wv5mw6Ngr3Sv/MBDYuOOTpw==
+"@datadog/browser-rum-core@4.23.3":
+  version "4.23.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.23.3.tgz#fafefd01d9ae9c0792e4b3dea2ed98d05a6fbdab"
+  integrity sha512-7uv511XgkyJjZP1B6fJWpdGvpp0XQZ38h0iqqMBCPszADVlDuRu7YYiuQFL6sUtAUR46kIWLKQSvL8IxB3/Cqg==
   dependencies:
-    "@datadog/browser-core" "4.11.1"
+    "@datadog/browser-core" "4.23.3"
 
-"@datadog/browser-rum@^4.7.0":
-  version "4.11.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-rum/-/browser-rum-4.11.1.tgz"
-  integrity sha512-3HXHmhN3fFBWFA5ShTEcod4rcZ4KvX2JxtXJjOmfWBSE7XYT8ScClkZXkBhBCigLOsnNLwSpGV0CDezOMEbdag==
+"@datadog/browser-rum@^4.11.1":
+  version "4.23.3"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.23.3.tgz#404d95b5259559b43d8c6ee751493f593612c616"
+  integrity sha512-wHYN8KeXCYlutgWnoJAs4S6Ck9k3rmf9jRKsxNDe6NXDiQnMP+Nlw3G5ls5FcFKYBp2g3ICAGwL30Hb8nSCWXw==
   dependencies:
-    "@datadog/browser-core" "4.11.1"
-    "@datadog/browser-rum-core" "4.11.1"
+    "@datadog/browser-core" "4.23.3"
+    "@datadog/browser-rum-core" "4.23.3"
 
 "@ethersproject/abi@5.1.0", "@ethersproject/abi@^5.1.0":
   version "5.1.0"
