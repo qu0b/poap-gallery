@@ -3,8 +3,8 @@ export const ROUTES = {
   event: '/event',
   activity: '/activity',
   renderEvent: '/r/event/:eventId',
-  eventSlug: '/event/:eventId'
-  
+  eventSlug: '/event/:eventId',
+
   // scan: '/scan/:account',
   // token: '/token/:tokenId',
   // callback: '/callback',
