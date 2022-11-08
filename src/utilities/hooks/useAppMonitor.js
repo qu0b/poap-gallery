@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { datadogRum } from '@datadog/browser-rum'
+import { useEffect } from 'react';
+import { datadogRum } from '@datadog/browser-rum';
 
 datadogRum.init({
   applicationId: process.env.REACT_APP_DATADOG_APPLICATION_ID || '',
@@ -12,12 +12,12 @@ datadogRum.init({
   sampleRate: 10,
   replaySampleRate: 0,
   trackInteractions: false,
-})
+});
 
 export const useAppMonitor = () => {
   useEffect(() => {
     if (process.env.REACT_APP_DATADOG_APPLICATION_ID) {
-      datadogRum.startSessionReplayRecording()
+      datadogRum.startSessionReplayRecording();
     }
-  }, [])
-}
+  }, []);
+};
