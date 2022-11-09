@@ -9,18 +9,12 @@ import Tokens from './pages/event';
 
 import { Header } from './components/header';
 import { Footer } from './components/footer';
-import useIntercom from '@reclaim-ai/react-intercom-hook';
 import { Toaster } from 'react-hot-toast';
 import { useAppMonitor } from './utilities/hooks/useAppMonitor';
 
 function App() {
   const GA_MEASUREMENT_ID =
     process.env.REACT_APP_GA_MEASUREMENT_ID || 'G-W21W3VZBBN';
-
-  // eslint-disable-next-line
-  const intercom = useIntercom({
-    app_id: process.env.REACT_APP_INTERCOM_APP_ID || 'syysagea',
-  });
 
   if (process.env.NODE_ENV === 'production') {
     ReactGA.initialize(GA_MEASUREMENT_ID);
