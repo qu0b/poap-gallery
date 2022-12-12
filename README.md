@@ -1,3 +1,7 @@
+# Intro
+POAP Gallery is an explorer for POAP tokens that searches by event and token address.
+A great tool that lets you view live stats on current public POAP drops.
+
 # POAP gallery
 
 * https://www.reddit.com/r/ethdev/comments/icfzhn/poap_proof_of_attendance_protocol_is_interested/g22d6ly/
