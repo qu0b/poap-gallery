@@ -3,6 +3,7 @@ POAP Gallery is an explorer for POAP tokens that searches by event and token add
 A great tool that lets you view live stats on current public POAP drops.
 
 # POAP gallery
+[![gitpoap badge](https://public-api.gitpoap.io/v1/repo/poap-xyz/poap-gallery/badge)](https://www.gitpoap.io/gh/poap-xyz/poap-gallery)
 
 * https://www.reddit.com/r/ethdev/comments/icfzhn/poap_proof_of_attendance_protocol_is_interested/g22d6ly/
 * https://etherscan.io/token/0x22c1f6050e56d2876009903609a2cc3fef83b415
