@@ -38,7 +38,7 @@ import { Spinner } from '../components/spinner';
 import { collectionlLinks, externalLinkSetter } from '../utilities/utilities';
 import { POAP_APP_URL } from '../store/api';
 
-const GRAPH_LIMIT = 1000;
+const GRAPH_LIMIT = 300;
 const CSV_STATUS = {
   DownloadingData: 'DownloadingData',
   DownloadingLastDataChunk: 'DownloadingLastDataChunk',
@@ -154,7 +154,7 @@ export function Event() {
         tokens[i].id,
         tokens[i].owner.id,
         null,
-        utcDateFull(tokens[i].created * 1000),
+        utcDateFull(tokens[i].created),
         tokens[i].transferCount,
         tokens[i].owner.tokensOwned,
       ]);
@@ -402,9 +402,7 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
         </a>
       </span>
       <span className="claim-title">Claim Date</span>
-      <span className="claim-content">
-        {utcDateFormatted(token.created * 1000)}
-      </span>
+      <span className="claim-content">{utcDateFormatted(token.created)}</span>
       <span className="tr-count-title">Transaction Count</span>
       <span className="tr-count-content">{token.transferCount}</span>
       <span className="power-title">Power</span>
@@ -501,7 +499,7 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
             ))}
           </div>
         ),
-        col3: tokens[i].created * 1000,
+        col3: tokens[i].created,
         col4: tokens[i].transferCount,
         col5: tokens[i].owner.tokensOwned,
       });

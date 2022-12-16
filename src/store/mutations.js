@@ -1,15 +1,12 @@
 import {
   getEvent,
+  getEventTokens,
   getMainnetEvents,
   getMainnetEventsByIds,
-  getMainnetOwners,
-  getMainnetTokens,
   getPaginatedEvents,
   getTop3Events,
   getxDaiEvents,
   getxDaiEventsByIds,
-  getXDaiOwners,
-  getxDaiTokens,
   OrderDirection,
   OrderType,
   PAGE_LIMIT,
@@ -405,83 +402,16 @@ export async function getActivityPageData() {
   };
 }
 
-function processSubgraphEventData(subgraphEvent, apiEvent, owners, tokens) {
-  if (subgraphEvent && subgraphEvent.data) {
-    if (subgraphEvent.data.tokens && subgraphEvent.data.tokens.length)
-      tokens = tokens.concat(subgraphEvent.data.tokens);
-
-    if (subgraphEvent.data.event) {
-      if (subgraphEvent.data.event.tokenCount)
-        apiEvent.tokenCount += parseInt(subgraphEvent.data.event.tokenCount);
-      if (subgraphEvent.data.event.transferCount)
-        apiEvent.transferCount += parseInt(
-          subgraphEvent.data.event.transferCount
-        );
-    }
-
-    for (let i = 0; i < subgraphEvent.data.tokens.length; i++) {
-      const owner = subgraphEvent.data.tokens[i].owner;
-      owner.tokensOwned = parseInt(owner.tokensOwned);
-      owners[owner.id] = owner;
-    }
-  }
-  return tokens;
-}
-
-function processCrossChainTokenOwned(chainOwner, crossChainOwner) {
-  if (
-    crossChainOwner &&
-    crossChainOwner.data &&
-    crossChainOwner.data.accounts
-  ) {
-    for (let i = 0; i < crossChainOwner.data.accounts.length; i++) {
-      const owner = crossChainOwner.data.accounts[i];
-      chainOwner[owner.id].tokensOwned += parseInt(
-        crossChainOwner.data.accounts.find(({ id }) => id === owner.id)
-          .tokensOwned
-      );
-    }
-  }
-}
-
 export async function getEventPageData(eventId, first, skip) {
   // Get the tokens info
-  let [mainnet, xDai, event] = await Promise.all([
-    getMainnetTokens(eventId, first, skip),
-    getxDaiTokens(eventId, first, skip),
+  let [eventTokens, event] = await Promise.all([
+    getEventTokens(eventId, first, skip),
     getEvent(eventId),
   ]);
-  let tokens = [];
-  const xDaiOwners = {};
-  const mainnetOwners = {};
-  event.tokenCount = 0;
-  event.transferCount = 0;
+  const { tokens, total, transferCount } = eventTokens;
+  event.tokenCount = total;
+  event.transferCount = transferCount;
 
-  // Process the data tokens and the owners
-  tokens = processSubgraphEventData(mainnet, event, mainnetOwners, tokens);
-  tokens = processSubgraphEventData(xDai, event, xDaiOwners, tokens);
-
-  // Get owner's data from the other chain (tokensOwned)
-  let [mainnetCallOwners, xDaiCallOwners] = await Promise.all([
-    // Get mainnet data from the xdai owners
-    getMainnetOwners(Object.keys(xDaiOwners)),
-    // Get xDai data from the mainnet owners
-    getXDaiOwners(Object.keys(mainnetOwners)),
-  ]);
-
-  //Sum the tokensOwned (power) for both chains from every owner
-  processCrossChainTokenOwned(xDaiOwners, mainnetCallOwners);
-  processCrossChainTokenOwned(mainnetOwners, xDaiCallOwners);
-
-  // Add the power to the tokens
-  for (let j = 0; j < tokens.length; j++) {
-    if (mainnetOwners[tokens[j].owner.id] !== undefined) {
-      tokens[j].owner.tokensOwned =
-        mainnetOwners[tokens[j].owner.id].tokensOwned;
-    } else if (xDaiOwners[tokens[j].owner.id] !== undefined) {
-      tokens[j].owner.tokensOwned = xDaiOwners[tokens[j].owner.id].tokensOwned;
-    }
-  }
   return {
     id: eventId,
     event,
