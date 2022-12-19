@@ -70,6 +70,12 @@ export async function getEvent(id) {
   return await fetchPOAPApi(`/events/id/${id}`);
 }
 
+export async function getEventTokens(id, limit, offset) {
+  return await fetchPOAPApi(
+    `/event/${id}/poaps?limit=${limit}&offset=${offset}`
+  );
+}
+
 export async function getLayerEvents(url, first, skip, orderBy) {
   const res = await fetch(url, {
     method: 'POST',
@@ -131,73 +137,6 @@ export async function getMainnetEvents(first, skip, orderBy) {
 
 export async function getxDaiEvents(first, skip, orderBy) {
   return getLayerEvents(XDAI_SUBGRAPH_URL, first, skip, orderBy);
-}
-
-export async function getLayerTokens(eventId, first, skip, url) {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-
-    body: JSON.stringify({
-      query: `
-        {
-          tokens(where:{ event: "${eventId}",  owner_not: "${ZERO_ADDRESS}"}, first: ${first}, skip: ${skip}) {
-            id
-            transferCount
-            created
-            owner {
-              id
-              tokensOwned
-            }
-          },
-          event(id: "${eventId}"){
-            tokenCount
-            transferCount
-          }
-        }
-        `,
-    }),
-  });
-  return res.json();
-}
-
-export async function getxDaiTokens(eventId, first, skip) {
-  return getLayerTokens(eventId, first, skip, XDAI_SUBGRAPH_URL);
-}
-
-export async function getMainnetTokens(eventId, first, skip) {
-  return getLayerTokens(eventId, first, skip, MAINNET_SUBGRAPH_URL);
-}
-
-export async function getLayerOwners(owners, url) {
-  const owners_id = owners.map((owner) => '"' + owner + '"').join(',');
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `
-      {
-        accounts(where:{id_in: [${owners_id}]}) {
-          id
-          tokensOwned
-        }
-      }
-      `,
-    }),
-  });
-  return res.json();
-}
-
-export async function getXDaiOwners(owner) {
-  return getLayerOwners(owner, XDAI_SUBGRAPH_URL);
-}
-
-export async function getMainnetOwners(owner) {
-  return getLayerOwners(owner, MAINNET_SUBGRAPH_URL);
 }
 
 export async function getLastTransfers(limit = 10) {

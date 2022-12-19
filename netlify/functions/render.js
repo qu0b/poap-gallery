@@ -5,48 +5,6 @@ const app = express();
 const axios = require('axios');
 const morgan = require('morgan');
 
-const XDAI_SUBGRAPH_URL = process.env.REACT_APP_XDAI_SUBGRAPH_URL;
-const MAINNET_SUBGRAPH_URL = process.env.REACT_APP_MAINNET_SUBGRAPH_URL;
-
-async function getLayerTokens(eventId, url) {
-  const res = await axios.post(
-    url,
-    JSON.stringify({
-      query: `
-        {
-          event(id: "${eventId}"){
-            tokenCount
-          }
-        }
-        `,
-    })
-  );
-  return res;
-}
-
-async function getxDaiTokens(eventId) {
-  return getLayerTokens(eventId, XDAI_SUBGRAPH_URL);
-}
-
-async function getMainnetTokens(eventId) {
-  return getLayerTokens(eventId, MAINNET_SUBGRAPH_URL);
-}
-
-async function fulfillWithTimeLimit(timeLimit, task, failureValue) {
-  let timeout;
-  const timeoutPromise = new Promise((resolve) => {
-    timeout = setTimeout(() => {
-      resolve(failureValue);
-    }, timeLimit);
-  });
-  const response = await Promise.race([task, timeoutPromise]);
-  if (timeout) {
-    //the code works without this but let's be safe and clean up the timeout
-    clearTimeout(timeout);
-  }
-  return response;
-}
-
 function dectectBot(userAgent) {
   const bots = [
     'bingbot',
@@ -96,24 +54,12 @@ router.get('/', async (req, res) => {
 
   if (isBot) {
     const event = await getEvent(eventId);
+    const eventTokens = await getEventTokens(eventId, 1, 0);
 
     const { data } = event;
 
-    const [xdai, main] = await Promise.all([
-      fulfillWithTimeLimit(1000, getxDaiTokens(eventId), null),
-      await fulfillWithTimeLimit(1000, getMainnetTokens(eventId), null),
-    ]);
-
-    let tokenCount = 0;
+    let tokenCount = eventTokens.total;
     let description = data.description;
-
-    if (xdai && xdai.data && xdai.data.data && xdai.data.data.event) {
-      tokenCount += parseInt(xdai.data.data.event.tokenCount, 10);
-    }
-
-    if (main && main.data && main.data.data && main.data.data.event) {
-      tokenCount += parseInt(main.data.data.event.tokenCount, 10);
-    }
 
     if (tokenCount > 0) {
       description = '[ Supply: ' + tokenCount + ' ] ' + description;
