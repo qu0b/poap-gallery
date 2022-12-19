@@ -3,6 +3,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
 const morgan = require('morgan');
+const axios = require('axios');
 
 const POAP_API_URL = process.env.REACT_APP_POAP_API_URL;
 const POAP_API_API_KEY = process.env.REACT_APP_POAP_API_API_KEY;
@@ -40,39 +41,15 @@ function dectectBot(userAgent) {
   console.log('no bots found');
   return false;
 }
-function buildPOAPApiHeaders(init) {
-  const headers = { 'X-API-Key': POAP_API_API_KEY };
-
-  if (!init || !init.headers) {
-    return headers;
-  }
-
-  return { ...init.headers, ...headers };
+function buildPOAPApiHeaders() {
+  return { 'X-API-Key': POAP_API_API_KEY };
 }
 
-function setQueryParamsToUrl(url, queryParams) {
-  if (!queryParams) {
-    return;
-  }
+async function fetchPOAPApi(path) {
+  const url = `${POAP_API_URL}${path}`;
+  const headers = buildPOAPApiHeaders();
 
-  for (const key in queryParams) {
-    const value = queryParams[key];
-
-    if (value === undefined) {
-      continue;
-    }
-
-    url.searchParams.append(key, value);
-  }
-}
-
-async function fetchPOAPApi(path, queryParams, init) {
-  const url = new URL(`${POAP_API_URL}${path}`);
-  const headers = buildPOAPApiHeaders(init);
-
-  setQueryParamsToUrl(url, queryParams);
-
-  const res = await fetch(url, { headers });
+  const res = await axios.get(url, { headers });
   return res.json();
 }
 
