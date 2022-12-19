@@ -2,9 +2,10 @@
 const express = require('express');
 const serverless = require('serverless-http');
 const app = express();
-const axios = require('axios');
 const morgan = require('morgan');
-const { getEventTokens, getEvent } = require('../../src/store/api');
+
+export const POAP_API_URL = process.env.REACT_APP_POAP_API_URL;
+export const POAP_API_API_KEY = process.env.REACT_APP_POAP_API_API_KEY;
 
 function dectectBot(userAgent) {
   const bots = [
@@ -38,6 +39,51 @@ function dectectBot(userAgent) {
 
   console.log('no bots found');
   return false;
+}
+function buildPOAPApiHeaders(init) {
+  const headers = { 'X-API-Key': POAP_API_API_KEY };
+
+  if (!init || !init.headers) {
+    return headers;
+  }
+
+  return { ...init.headers, ...headers };
+}
+
+function setQueryParamsToUrl(url, queryParams) {
+  if (!queryParams) {
+    return;
+  }
+
+  for (const key in queryParams) {
+    const value = queryParams[key];
+
+    if (value === undefined) {
+      continue;
+    }
+
+    url.searchParams.append(key, value);
+  }
+}
+
+async function fetchPOAPApi(path, queryParams, init) {
+  const url = new URL(`${POAP_API_URL}${path}`);
+  const headers = buildPOAPApiHeaders(init);
+
+  setQueryParamsToUrl(url, queryParams);
+
+  const res = await fetch(url, { headers });
+  return res.json();
+}
+
+export async function getEvent(id) {
+  return await fetchPOAPApi(`/events/id/${id}`);
+}
+
+export async function getEventTokens(id, limit, offset) {
+  return await fetchPOAPApi(
+    `/event/${id}/poaps?limit=${limit}&offset=${offset}`
+  );
 }
 
 const router = express.Router();
