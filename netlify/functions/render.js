@@ -4,6 +4,7 @@ const serverless = require('serverless-http');
 const app = express();
 const axios = require('axios');
 const morgan = require('morgan');
+const { getEventTokens, getEvent } = require('../../src/store/api');
 
 function dectectBot(userAgent) {
   const bots = [
@@ -38,14 +39,6 @@ function dectectBot(userAgent) {
   console.log('no bots found');
   return false;
 }
-
-const getEvent = async (id) => {
-  try {
-    return await axios.get('https://api.poap.tech/events/id/' + id);
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const router = express.Router();
 router.get('/', async (req, res) => {
