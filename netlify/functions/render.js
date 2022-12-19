@@ -4,8 +4,8 @@ const serverless = require('serverless-http');
 const app = express();
 const morgan = require('morgan');
 
-export const POAP_API_URL = process.env.REACT_APP_POAP_API_URL;
-export const POAP_API_API_KEY = process.env.REACT_APP_POAP_API_API_KEY;
+const POAP_API_URL = process.env.REACT_APP_POAP_API_URL;
+const POAP_API_API_KEY = process.env.REACT_APP_POAP_API_API_KEY;
 
 function dectectBot(userAgent) {
   const bots = [
@@ -76,11 +76,11 @@ async function fetchPOAPApi(path, queryParams, init) {
   return res.json();
 }
 
-export async function getEvent(id) {
+async function getEvent(id) {
   return await fetchPOAPApi(`/events/id/${id}`);
 }
 
-export async function getEventTokens(id, limit, offset) {
+async function getEventTokens(id, limit, offset) {
   return await fetchPOAPApi(
     `/event/${id}/poaps?limit=${limit}&offset=${offset}`
   );
