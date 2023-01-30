@@ -9,6 +9,7 @@ import {
   getIndexPageData,
   getEventPageData,
   getActivityPageData,
+  getEventTokenData,
 } from './mutations';
 
 export const FETCH_INFO_STATUS = {
@@ -36,7 +37,7 @@ const initialEventsState = {
   eventStatus: FETCH_EVENT_PAGE_INFO_STATUS.IDLE,
   eventError: null,
   tokens: [],
-  tokenId: null,
+  eventId: null,
   apiSkip: 0,
   totalResults: 0,
   page: 0,
@@ -49,7 +50,13 @@ export const fetchIndexData = createAsyncThunk(
 );
 export const fetchEventPageData = createAsyncThunk(
   'events/fetchEventPageData',
-  async ({ eventId, first, skip }) => getEventPageData(eventId, first, skip)
+  async ({ eventId, first, skip }) => {
+    if (skip === 0) {
+      return getEventPageData(eventId, first, skip);
+    } else {
+      return getEventTokenData(eventId, first, skip);
+    }
+  }
 );
 export const fetchActivityPageData = createAsyncThunk(
   'events/fetchActivityPageData',
@@ -92,14 +99,17 @@ const eventsSlice = createSlice({
       state.eventStatus = FETCH_EVENT_PAGE_INFO_STATUS.LOADING;
     },
     [fetchEventPageData.fulfilled]: (state, action) => {
-      if (state.tokenId === action.payload.id) {
+      if (state.eventId === action.payload.id) {
         state.tokens = current(state.tokens).concat(action.payload.tokens);
       } else {
         state.tokens = action.payload.tokens;
       }
 
-      state.tokenId = action.payload.id;
-      state.event = action.payload.event;
+      state.eventId = action.payload.id;
+      if (action.payload.event) {
+        // Event data is only retrieved the first page of tokens.
+        state.event = action.payload.event;
+      }
       state.eventStatus = FETCH_EVENT_PAGE_INFO_STATUS.SUCCEEDED;
     },
     [fetchEventPageData.rejected]: (state, action) => {
