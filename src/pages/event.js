@@ -48,6 +48,9 @@ const CSV_STATUS = {
   NoTokens: 'NoTokens',
 };
 
+const POAP_FAMILY_URL =
+  process.env.REACT_APP_POAP_FAMILY_URL ?? 'https://poap.family';
+
 export default function Events() {
   let match = useRouteMatch();
 
@@ -289,6 +292,23 @@ export function Event() {
               </div>
               <div style={{ minHeight: '200px', margin: '0 auto' }}>
                 <EventCard key={0} event={event} size="l" power={power} />
+              </div>
+              <div
+                className="more-info"
+                style={{
+                  padding: '1rem',
+                  textAlign: 'center',
+                }}
+              >
+                Find more interesting information about this drop in{' '}
+                <a
+                  href={`${POAP_FAMILY_URL}/event/${eventId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  POAP.family
+                </a>
+                !
               </div>
             </div>
           </div>
