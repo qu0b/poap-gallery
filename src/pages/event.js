@@ -331,8 +331,10 @@ export function Event() {
             {(csvReady() || csvOnlyMissingEns() || csvFailed()) && (
               <CSVLink
                 onClick={() => {
+                  const url = new URL(window.location.href);
+                  url.pathname += '/${event.name}.csv';
                   trackLink({
-                    href: `${event.name}.csv`,
+                    href: url,
                     linkType: 'download',
                   });
                 }}
