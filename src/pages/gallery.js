@@ -19,6 +19,7 @@ import Dropdown from '../components/dropdown';
 import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 import { useWindowWidth } from '@react-hook/window-size';
 import { OrderType, OrderDirection } from '../store/api';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 const SEARCH_STATUS = {
   NoSearch: 'NoSearch',
@@ -29,6 +30,7 @@ const SEARCH_STATUS = {
 
 export default function Gallery() {
   const dispatch = useDispatch();
+  const { trackPageView, trackSiteSearch } = useMatomo();
 
   const events = useSelector(selectEvents);
   const indexFetchStatus = useSelector(selectIndexFetchStatus);
@@ -92,6 +94,13 @@ export default function Gallery() {
     setItems(events);
   }, [events]);
 
+  useEffect(() => {
+    trackPageView({
+      href: window.location.href,
+      documentTitle: `POAP Gallery - Home`,
+    });
+  }, []);
+
   const eraseSearch = () => {
     setSearchValue('');
     setSearchStatus(SEARCH_STATUS.NoSearch);
@@ -111,6 +120,11 @@ export default function Gallery() {
       setSearchStatus(SEARCH_STATUS.NoSearch);
     } else {
       setSearchStatus(SEARCH_STATUS.Searching);
+      trackSiteSearch({
+        href: window.location.href,
+        documentTitle: `POAP Gallery - Search "${value}"`,
+        keyword: value,
+      });
     }
   };
   const handleNewSearchValue = (value) => {

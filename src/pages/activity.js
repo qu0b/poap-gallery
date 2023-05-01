@@ -34,13 +34,22 @@ import { useWindowWidth } from '@react-hook/window-size/throttled';
 import { Link } from 'react-router-dom';
 import { LazyImage } from '../components/LazyImage';
 import { toast } from 'react-hot-toast';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 export default function Activity() {
   const dispatch = useDispatch();
+  const { trackPageView } = useMatomo();
 
   // Meanwhile get all the events
   useEffect(() => {
     dispatch(fetchActivityPageData());
+  }, []);
+
+  useEffect(() => {
+    trackPageView({
+      href: window.location.href,
+      documentTitle: 'POAP Gallery - Activity',
+    });
   }, []);
 
   const [loading, setLoading] = useState(false);

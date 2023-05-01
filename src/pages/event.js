@@ -37,6 +37,7 @@ import { useWindowWidth } from '@react-hook/window-size/throttled';
 import { Spinner } from '../components/spinner';
 import { collectionlLinks, externalLinkSetter } from '../utilities/utilities';
 import { POAP_APP_URL } from '../store/api';
+import { useMatomo } from '@datapunt/matomo-tracker-react';
 
 const FETCH_POAPS_LIMIT = 300;
 const CSV_STATUS = {
@@ -70,6 +71,8 @@ export function Event() {
   const params = useParams();
   const { eventId } = params;
   const dispatch = useDispatch();
+  const { trackPageView, trackLink } = useMatomo();
+
   const tokens = useSelector((state) => state.events.tokens);
   const loadingEvent = useSelector((state) => state.events.eventStatus);
   const errorEvent = useSelector((state) => state.events.eventError);
@@ -115,6 +118,15 @@ export function Event() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (event) {
+      trackPageView({
+        href: window.location.href,
+        documentTitle: `POAP Gallery - Event - ${event.name}`,
+      });
+    }
+  }, [event]);
 
   useEffect(() => {
     // Get new batch of tokens
@@ -318,6 +330,12 @@ export function Event() {
             </div>
             {(csvReady() || csvOnlyMissingEns() || csvFailed()) && (
               <CSVLink
+                onClick={() => {
+                  trackLink({
+                    href: `${event.name}.csv`,
+                    linkType: 'download',
+                  });
+                }}
                 filename={`${event.name}.csv`}
                 target="_blank"
                 data-tip={`${
