@@ -133,6 +133,7 @@ export function Event() {
         href: window.location.href,
         documentTitle: `POAP Gallery - Event - ${event.name}`,
       });
+      setTrackedEvent(event.id);
     }
   }, [
     event,
