@@ -39,6 +39,7 @@ export default function Gallery() {
   const [items, setItems] = useState(events);
   const [searchStatus, setSearchStatus] = useState(SEARCH_STATUS.NoSearch);
   const [searchValue, setSearchValue] = useState('');
+  const [searchTrackTimer, setSearchTrackTimer] = useState(null);
   const [page, setPage] = useState(0);
   const [moreToLoad, setMoreToLoad] = useState(true);
 
@@ -120,11 +121,20 @@ export default function Gallery() {
       setSearchStatus(SEARCH_STATUS.NoSearch);
     } else {
       setSearchStatus(SEARCH_STATUS.Searching);
-      trackSiteSearch({
-        href: window.location.href,
-        documentTitle: `POAP Gallery - Search "${value}"`,
-        keyword: value,
-      });
+      if (searchTrackTimer) {
+        clearTimeout(searchTrackTimer);
+        setSearchTrackTimer(null);
+      }
+      setSearchTrackTimer(
+        setTimeout(() => {
+          trackSiteSearch({
+            href: window.location.href,
+            documentTitle: `POAP Gallery - Search "${value}"`,
+            keyword: value,
+          });
+          setSearchTrackTimer(null);
+        }, 500)
+      );
     }
   };
   const handleNewSearchValue = (value) => {
