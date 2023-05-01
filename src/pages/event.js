@@ -120,7 +120,7 @@ export function Event() {
   }, []);
 
   useEffect(() => {
-    if (succeededLoadingEvent() && !tableIsLoading) {
+    if (succeededLoadingEvent() && !tableIsLoading && event && event?.name) {
       trackPageView({
         href: window.location.href,
         documentTitle: `POAP Gallery - Event - ${event.name}`,
