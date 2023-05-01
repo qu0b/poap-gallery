@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@datadog/browser-rum": "^4.11.1",
+    "@datapunt/matomo-tracker-react": "^0.5.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",

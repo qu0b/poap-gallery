@@ -8,9 +8,24 @@ import { Provider } from 'react-redux';
 
 import store from './store';
 import ReactModal from 'react-modal';
+import { createInstance, MatomoProvider } from '@datapunt/matomo-tracker-react';
 
 AOS.init({
   once: true,
+});
+
+const matomoHost = process.env.REACT_APP_MATOMO_HOST ?? 'poapxyz.matomo.cloud';
+const matomoSiteId = parseInt(process.env.REACT_APP_MATOMO_SITE_ID);
+
+const matomo = createInstance({
+  siteId: matomoSiteId,
+  urlBase: `https://${matomoHost}`,
+  srcUrl: `https://cdn.matomo.cloud/${matomoHost}/matomo.js`,
+  disabled: false,
+  linkTracking: true,
+  configurations: {
+    disableCookies: true,
+  },
 });
 
 ReactModal.setAppElement(document.getElementById('root'));
@@ -20,7 +35,9 @@ const render = () => {
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>
-        <App />
+        <MatomoProvider value={matomo}>
+          <App />
+        </MatomoProvider>
       </Provider>
     </React.StrictMode>,
     document.getElementById('root')
