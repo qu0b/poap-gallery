@@ -83,6 +83,7 @@ export function Event() {
   const [ensNames, setEnsNames] = useState([]);
   const [canDownloadCsv, setCanDownloadCsv] = useState(CSV_STATUS.NoTokens);
   const [tableIsLoading, setTableIsLoading] = useState(true);
+  const [trackedEvent, setTrackedEvent] = useState(null);
   const pageCount = useMemo(
     () =>
       event.tokenCount % 50 !== 0
@@ -120,13 +121,26 @@ export function Event() {
   }, []);
 
   useEffect(() => {
-    if (succeededLoadingEvent() && !tableIsLoading && event && event?.name) {
+    if (
+      succeededLoadingEvent() &&
+      !tableIsLoading &&
+      event &&
+      event?.name &&
+      event?.id &&
+      (!trackedEvent || trackedEvent !== event.id)
+    ) {
       trackPageView({
         href: window.location.href,
         documentTitle: `POAP Gallery - Event - ${event.name}`,
       });
     }
-  }, [event, succeededLoadingEvent, tableIsLoading]);
+  }, [
+    event,
+    succeededLoadingEvent,
+    tableIsLoading,
+    trackedEvent,
+    setTrackedEvent,
+  ]);
 
   useEffect(() => {
     // Get new batch of tokens
