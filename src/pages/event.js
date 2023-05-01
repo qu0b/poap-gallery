@@ -123,7 +123,6 @@ export function Event() {
   useEffect(() => {
     if (
       succeededLoadingEvent() &&
-      !tableIsLoading &&
       event &&
       event?.name &&
       event?.id &&
@@ -135,13 +134,7 @@ export function Event() {
       });
       setTrackedEvent(event.id);
     }
-  }, [
-    event,
-    succeededLoadingEvent,
-    tableIsLoading,
-    trackedEvent,
-    setTrackedEvent,
-  ]);
+  }, [event, succeededLoadingEvent, trackedEvent, setTrackedEvent]);
 
   useEffect(() => {
     // Get new batch of tokens
