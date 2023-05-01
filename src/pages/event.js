@@ -332,7 +332,7 @@ export function Event() {
               <CSVLink
                 onClick={() => {
                   const url = new URL(window.location.href);
-                  url.pathname += '/${event.name}.csv';
+                  url.pathname += `/${event.name}.csv`;
                   trackLink({
                     href: url,
                     linkType: 'download',
