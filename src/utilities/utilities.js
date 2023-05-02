@@ -2,18 +2,14 @@ import React from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { ReactComponent as Mazury } from '../assets/images/mazury.svg';
 import { ReactComponent as Rainbow } from '../assets/images/rainbow.svg';
 import { ReactComponent as Tally } from '../assets/images/tally.svg';
-import { ReactComponent as CyberConnect } from '../assets/images/cyberConnect.svg';
 import { ReactComponent as Poap } from '../assets/images/POAP.svg';
 import { ReactComponent as GitPoap } from '../assets/images/gitpoap.svg';
 import { ReactComponent as PoapIn } from '../assets/images/poapin.svg';
-import { ReactComponent as Gm } from '../assets/images/gm.svg';
 import { ReactComponent as Moca } from '../assets/images/moca.svg';
 import { ReactComponent as Welook } from '../assets/images/welook.svg';
 import { ReactComponent as Backdrop } from '../assets/images/backdrop.svg';
-import { ReactComponent as Light } from '../assets/images/light.svg';
 
 //Partners
 const POAP_EXPLORE_PARTNER = {
@@ -21,20 +17,13 @@ const POAP_EXPLORE_PARTNER = {
   url: 'https://explore.poap.xyz',
 };
 const RAINBOW_PARTNER = { name: 'RAINBOW', url: 'https://rainbow.me' };
-const MAZURY_PARTNER = { name: 'MAZURY', url: 'https://app.mazury.xyz' };
-const CYBERCONNECT_PARTNER = {
-  name: 'CYBERCONNECT',
-  url: 'https://app.cyberconnect.me',
-};
 const WITHTALLY_PARTNER = {
   name: 'WITHTALLY',
   url: 'https://www.withtally.com',
 };
-const GM_PARTNER = { name: 'GM', url: 'https://gm.xyz' };
 const MOCA_PARTNER = { name: 'MOCA', url: 'https://app.museumofcryptoart.com' };
 const WELOOK_PARTNER = { name: 'WELOOK', url: 'https://welook.io' };
 const BACKDROP_PARTNER = { name: 'BACKDROP', url: 'https://backdrop.so' };
-const LIGHT_PARTNER = { name: 'LIGHT', url: 'https://light.so' };
 const GIT_POAP_PARTNER = { name: 'GIT_POAP', url: 'https://www.gitpoap.io' };
 const POAP_IN_PARTNER = { name: 'POAP_IN', url: 'https://poap.in/v' };
 
@@ -103,14 +92,10 @@ export const externalLinkSetter = (owner_id, name) => {
   const collectionLinks = {
     [POAP_EXPLORE_PARTNER.name]: `${POAP_EXPLORE_PARTNER.url}/${owner_id}`,
     [RAINBOW_PARTNER.name]: `${RAINBOW_PARTNER.url}/${owner_id}?family=POAP`,
-    [MAZURY_PARTNER.name]: `${MAZURY_PARTNER.url}/people/${owner_id}`,
-    [CYBERCONNECT_PARTNER.name]: `${CYBERCONNECT_PARTNER.url}/address/${owner_id}`,
     [WITHTALLY_PARTNER.name]: `${WITHTALLY_PARTNER.url}/voter/${owner_id}`,
-    [GM_PARTNER.name]: `${GM_PARTNER.url}/u/${owner_id}/poaps`,
     [MOCA_PARTNER.name]: `${MOCA_PARTNER.url}/member/${owner_id}`,
     [WELOOK_PARTNER.name]: `${WELOOK_PARTNER.url}/${owner_id}`,
     [BACKDROP_PARTNER.name]: `${BACKDROP_PARTNER.url}/${owner_id}`,
-    [LIGHT_PARTNER.name]: `${LIGHT_PARTNER.url}/${owner_id}`,
     [GIT_POAP_PARTNER.name]: `${GIT_POAP_PARTNER.url}/p/${owner_id}`,
     [POAP_IN_PARTNER.name]: `${POAP_IN_PARTNER.url}/${owner_id}`,
     default: '',
@@ -150,21 +135,6 @@ export const collectionlLinks = [
     tooltipText: 'View Collection in Rainbow.me',
   },
   {
-    id: MAZURY_PARTNER.name,
-    icon: (
-      <Mazury
-        style={{
-          margin: '0 5px',
-          verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
-        }}
-        alt={'Open external link'}
-      />
-    ),
-    tooltipText: 'View Collection in Mazury.xyz',
-  },
-  {
     id: WITHTALLY_PARTNER.name,
     icon: (
       <Tally
@@ -178,36 +148,6 @@ export const collectionlLinks = [
       />
     ),
     tooltipText: 'View Collection in Tally',
-  },
-  {
-    id: CYBERCONNECT_PARTNER.name,
-    icon: (
-      <CyberConnect
-        style={{
-          margin: '0 5px',
-          verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
-        }}
-        alt={'Open external link'}
-      />
-    ),
-    tooltipText: 'View Collection in Cyberconnect.me',
-  },
-  {
-    id: GM_PARTNER.name,
-    icon: (
-      <Gm
-        style={{
-          margin: '0 5px',
-          verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
-        }}
-        alt={'Open external link'}
-      />
-    ),
-    tooltipText: 'View Collection in Gm.xyz',
   },
   {
     id: MOCA_PARTNER.name,
@@ -253,21 +193,6 @@ export const collectionlLinks = [
       />
     ),
     tooltipText: 'View Collection in Backdrop.so',
-  },
-  {
-    id: LIGHT_PARTNER.name,
-    icon: (
-      <Light
-        style={{
-          margin: '0 5px',
-          verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
-        }}
-        alt={'Open external link'}
-      />
-    ),
-    tooltipText: 'View Collection in Light.so',
   },
   {
     id: GIT_POAP_PARTNER.name,
