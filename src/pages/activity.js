@@ -136,7 +136,7 @@ function TokenRow({ transfer, dateFormat }) {
         {transfer.type === ActivityType.MIGRATION ? (
           <img src={Migration} alt="Migration" />
         ) : transfer.type === ActivityType.CLAIM ? (
-          <img src={Claim} alt="Claim" />
+          <img src={Claim} alt="Mint" />
         ) : transfer.type === ActivityType.BURN ? (
           <img src={Burn} alt="Burn" />
         ) : (
@@ -193,7 +193,7 @@ function TokenRow({ transfer, dateFormat }) {
         {' '}
         {transfer.transferCount && transfer.transferCount > 0
           ? transfer.transferCount
-          : 'Claimed'}{' '}
+          : 'Minted'}{' '}
       </td>
       <td style={{ wordBreak: 'break-all' }}>
         {' '}
