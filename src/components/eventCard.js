@@ -270,7 +270,7 @@ function Content({ type, width, size, event, power }) {
             {tokenCount === undefined
               ? ' -'
               : tokenCount === 0
-              ? ' None Claimed'
+              ? ' None Minted'
               : tokenCount}
           </span>
         </div>
