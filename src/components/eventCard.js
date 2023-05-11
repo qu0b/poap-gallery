@@ -167,7 +167,7 @@ function Content({ type, width, size, event, power }) {
                 style={{ width: '1rem', marginRight: '.2rem' }}
                 icon={size === 's' ? null : faFire}
               />
-              Most claimed
+              Most minted
             </div>
           ) : (
             ''
@@ -270,7 +270,7 @@ function Content({ type, width, size, event, power }) {
             {tokenCount === undefined
               ? ' -'
               : tokenCount === 0
-              ? ' None Claimed'
+              ? ' None Minted'
               : tokenCount}
           </span>
         </div>
