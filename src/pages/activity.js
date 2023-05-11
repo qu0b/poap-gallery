@@ -317,7 +317,7 @@ function TokenRowDescription({ transfer }) {
         </span>
       ) : transfer.type === ActivityType.CLAIM ? (
         <span>
-          POAP claimed on event{' '}
+          POAP minted on event{' '}
           <Link to={`/event/${transfer.eventId}`}>#{transfer.eventId}</Link> on{' '}
           {transfer.chain}
         </span>
@@ -398,7 +398,7 @@ function CreateTable({ transfers, loading }) {
                 TX count{' '}
                 <FontAwesomeIcon
                   icon={faQuestionCircle}
-                  data-tip="The amount of transactions this POAP has done since it the day it been claimed."
+                  data-tip="The amount of transactions this POAP has done since it the day it been minted."
                 />
                 <ReactTooltip effect="solid" />{' '}
               </th>
