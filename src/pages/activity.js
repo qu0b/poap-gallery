@@ -136,7 +136,7 @@ function TokenRow({ transfer, dateFormat }) {
         {transfer.type === ActivityType.MIGRATION ? (
           <img src={Migration} alt="Migration" />
         ) : transfer.type === ActivityType.CLAIM ? (
-          <img src={Claim} alt="Claim" />
+          <img src={Claim} alt="Mint" />
         ) : transfer.type === ActivityType.BURN ? (
           <img src={Burn} alt="Burn" />
         ) : (
@@ -193,7 +193,7 @@ function TokenRow({ transfer, dateFormat }) {
         {' '}
         {transfer.transferCount && transfer.transferCount > 0
           ? transfer.transferCount
-          : 'Claimed'}{' '}
+          : 'Minted'}{' '}
       </td>
       <td style={{ wordBreak: 'break-all' }}>
         {' '}
@@ -317,7 +317,7 @@ function TokenRowDescription({ transfer }) {
         </span>
       ) : transfer.type === ActivityType.CLAIM ? (
         <span>
-          POAP claimed on event{' '}
+          POAP minted on event{' '}
           <Link to={`/event/${transfer.eventId}`}>#{transfer.eventId}</Link> on{' '}
           {transfer.chain}
         </span>
@@ -398,7 +398,7 @@ function CreateTable({ transfers, loading }) {
                 TX count{' '}
                 <FontAwesomeIcon
                   icon={faQuestionCircle}
-                  data-tip="The amount of transactions this POAP has done since it the day it been claimed."
+                  data-tip="The amount of transactions this POAP has done since it the day it been minted."
                 />
                 <ReactTooltip effect="solid" />{' '}
               </th>

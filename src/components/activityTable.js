@@ -120,7 +120,7 @@ function Transfer({ transfer }) {
             {transfer.type === ActivityType.CLAIM ? (
               <span>
                 {' '}
-                POAP claimed on event{' '}
+                POAP minted on event{' '}
                 <object>
                   <Link to={`/event/${transfer.eventId}`}>
                     #{transfer.eventId}

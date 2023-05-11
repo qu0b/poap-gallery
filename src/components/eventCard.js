@@ -167,7 +167,7 @@ function Content({ type, width, size, event, power }) {
                 style={{ width: '1rem', marginRight: '.2rem' }}
                 icon={size === 's' ? null : faFire}
               />
-              Most claimed
+              Most minted
             </div>
           ) : (
             ''
