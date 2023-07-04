@@ -58,11 +58,11 @@ To this
 #### render.js
 From this
 ```
-const eventId = req.baseUrl.split('/')[2];
+const eventId = req?.baseUrl?.split('/')[2];
 ```
 To this
 ```
-const eventId = req.baseUrl.split('/')[4]
+const eventId = req?.baseUrl?.split('/')[4]
 ```
 ### Commands to run
 ```

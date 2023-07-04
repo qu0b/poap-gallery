@@ -65,15 +65,15 @@ async function getEventTokens(id, limit, offset) {
 
 const router = express.Router();
 router.get('/', async (req, res) => {
-  const isBot = dectectBot(req.headers['user-agent']);
-  const eventId = req.baseUrl.split('/')[2];
+  const isBot = dectectBot(req?.headers['user-agent']);
+  const eventId = req?.baseUrl?.split('/')[2];
 
   if (isBot) {
     const event = await getEvent(eventId);
     const eventTokens = await getEventTokens(eventId, 1, 0);
 
-    let tokenCount = eventTokens.total;
-    let description = event.description;
+    let tokenCount = eventTokens?.total;
+    let description = event?.description;
 
     if (tokenCount > 0) {
       description = '[ Supply: ' + tokenCount + ' ] ' + description;

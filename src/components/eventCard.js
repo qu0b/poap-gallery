@@ -121,7 +121,7 @@ function Content({ type, width, size, event, power }) {
   }, [event, transferCount]);
 
   const nl2br = (text) =>
-    text.split(/\r?\n|\r|\n/g).map((item) => {
+    text?.split(/\r?\n|\r|\n/g)?.map((item) => {
       return (
         <>
           <p className={'discreet-paragraph'} key={item.toString()}>
