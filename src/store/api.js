@@ -1,3 +1,12 @@
+import { PoapCompass } from '@poap-xyz/providers';
+import {
+  DROPS_COUNT,
+  PAGINATED_DROPS_QUERY,
+  SEARCH_DROPS_COUNT,
+  SEARCH_PAGINATED_DROPS_QUERY,
+} from './compass/queries/paginatedDrops';
+import { creatUndefinedOrder, createSearchFilter } from './compass/utils';
+
 export const POAP_API_URL = process.env.REACT_APP_POAP_API_URL;
 export const POAP_API_API_KEY = process.env.REACT_APP_POAP_API_API_KEY;
 export const POAP_APP_URL = process.env.REACT_APP_POAP_APP_URL;
@@ -8,7 +17,7 @@ export const OrderType = {
   },
   tokenCount: {
     name: 'Supply',
-    val: 'token_count',
+    val: 'poap_count',
   },
   transferCount: {
     name: 'Transfers',
@@ -33,59 +42,62 @@ export const OrderDirection = {
     val: 'desc',
   },
 };
-export const isBlockchainOrderByType = (orderBy) =>
-  orderBy.type === OrderType.tokenCount.val ||
-  orderBy.type === OrderType.transferCount.val;
 
 export const PAGE_LIMIT = 20;
 
+const compass = new PoapCompass(
+  'you_api_key',
+  'https://public.compass.poap.tech/v1/graphql'
+);
+
 export async function getPaginatedEvents({
   name = undefined,
-  event_ids = undefined,
-  offset = undefined,
-  limit = undefined,
-  orderBy = undefined,
-  privateEvents = undefined,
-}) {
-  let queryParams = {
-    name,
-    event_ids,
-    limit,
-    offset,
-    private_event: privateEvents,
-    with_power: true,
-  };
-
-  if (orderBy?.type && orderBy?.order) {
-    queryParams = {
-      ...queryParams,
-      sort_field: orderBy.type,
-      sort_dir: orderBy.order,
-    };
-  }
-
-  return await fetchPOAPApi('/paginated-events', queryParams);
-}
-
-export async function getBlockchainPaginatedEvents({
   offset = undefined,
   limit = undefined,
   orderBy = undefined,
 }) {
-  let queryParams = {
+  const variables = {
     limit,
     offset,
+    where: {
+      private: { _eq: 'false' },
+      stats_by_chain: { poap_count: { _gte: 1 } },
+    },
+    orderBy: creatUndefinedOrder(orderBy.type, orderBy.order),
+    ...createSearchFilter('name', name),
   };
 
-  if (orderBy?.type && orderBy?.order) {
-    queryParams = {
-      ...queryParams,
-      sort_field: orderBy.type,
-      sort_dir: orderBy.order,
-    };
+  let graphqlDrops;
+  let total;
+  if (name) {
+    const results = await Promise.all([
+      compass.request(SEARCH_PAGINATED_DROPS_QUERY, variables),
+      compass.request(SEARCH_DROPS_COUNT, variables),
+    ]);
+    graphqlDrops = results[0].data.search_drops;
+    total = results[1].data.search_drops_aggregate.aggregate.count;
+  } else {
+    const results = await Promise.all([
+      compass.request(PAGINATED_DROPS_QUERY, variables),
+      compass.request(DROPS_COUNT, variables),
+    ]);
+    graphqlDrops = results[0].data.drops;
+    total = results[1].data.drops_aggregate.aggregate.count;
   }
 
-  return await fetchPOAPApi('/blockchain-events', queryParams);
+  const drops = graphqlDrops.map((drop) => {
+    return {
+      ...drop,
+      tokenCount: drop.stats_by_chain_aggregate.aggregate.sum
+        ? Number(drop.stats_by_chain_aggregate.aggregate.sum.poap_count)
+        : 0,
+      transferCount: drop.stats_by_chain_aggregate.aggregate.sum
+        ? Number(drop.stats_by_chain_aggregate.aggregate.sum.transfer_count)
+        : 0,
+    };
+  });
+
+  return { items: drops, total };
 }
 
 export async function getEvent(id) {
