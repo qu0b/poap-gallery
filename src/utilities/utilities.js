@@ -3,13 +3,11 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { ReactComponent as Rainbow } from '../assets/images/rainbow.svg';
-import { ReactComponent as Tally } from '../assets/images/tally.svg';
 import { ReactComponent as Poap } from '../assets/images/POAP.svg';
-import { ReactComponent as GitPoap } from '../assets/images/gitpoap.svg';
 import { ReactComponent as PoapIn } from '../assets/images/poapin.svg';
-import { ReactComponent as Moca } from '../assets/images/moca.svg';
 import { ReactComponent as Welook } from '../assets/images/welook.svg';
-import { ReactComponent as Backdrop } from '../assets/images/backdrop.svg';
+import { ReactComponent as Zerion } from '../assets/images/zerion.svg';
+import { ReactComponent as Zapper } from '../assets/images/zapper.svg';
 
 //Partners
 const POAP_EXPLORE_PARTNER = {
@@ -17,15 +15,10 @@ const POAP_EXPLORE_PARTNER = {
   url: 'https://explore.poap.xyz',
 };
 const RAINBOW_PARTNER = { name: 'RAINBOW', url: 'https://rainbow.me' };
-const WITHTALLY_PARTNER = {
-  name: 'WITHTALLY',
-  url: 'https://www.withtally.com',
-};
-const MOCA_PARTNER = { name: 'MOCA', url: 'https://app.museumofcryptoart.com' };
 const WELOOK_PARTNER = { name: 'WELOOK', url: 'https://welook.io' };
-const BACKDROP_PARTNER = { name: 'BACKDROP', url: 'https://backdrop.so' };
-const GIT_POAP_PARTNER = { name: 'GIT_POAP', url: 'https://www.gitpoap.io' };
 const POAP_IN_PARTNER = { name: 'POAP_IN', url: 'https://poap.in/v' };
+const ZERION_PARTNER = { name: 'ZERION', url: 'https://app.zerion.io' };
+const ZAPPER_PARTNER = { name: 'ZAPPER', url: 'https://zapper.xyz' };
 
 dayjs.extend(utc);
 dayjs.extend(relativeTime);
@@ -92,17 +85,14 @@ export const externalLinkSetter = (owner_id, name) => {
   const collectionLinks = {
     [POAP_EXPLORE_PARTNER.name]: `${POAP_EXPLORE_PARTNER.url}/${owner_id}`,
     [RAINBOW_PARTNER.name]: `${RAINBOW_PARTNER.url}/${owner_id}?family=POAP`,
-    [WITHTALLY_PARTNER.name]: `${WITHTALLY_PARTNER.url}/voter/${owner_id}`,
-    [MOCA_PARTNER.name]: `${MOCA_PARTNER.url}/member/${owner_id}`,
     [WELOOK_PARTNER.name]: `${WELOOK_PARTNER.url}/${owner_id}`,
-    [BACKDROP_PARTNER.name]: `${BACKDROP_PARTNER.url}/${owner_id}`,
-    [GIT_POAP_PARTNER.name]: `${GIT_POAP_PARTNER.url}/p/${owner_id}`,
     [POAP_IN_PARTNER.name]: `${POAP_IN_PARTNER.url}/${owner_id}`,
+    [ZERION_PARTNER.name]: `${ZERION_PARTNER.url}/${owner_id}/nfts?collections=41`,
+    [ZAPPER_PARTNER.name]: `${ZAPPER_PARTNER.url}/nft/gnosis/0x22c1f6050e56d2876009903609a2cc3fef83b415?collectionOwners%5B%5D=${owner_id}`,
     default: '',
   };
   return collectionLinks[name] || collectionLinks['default'];
 };
-
 export const collectionlLinks = [
   {
     id: POAP_EXPLORE_PARTNER.name,
@@ -135,34 +125,34 @@ export const collectionlLinks = [
     tooltipText: 'View Collection in Rainbow.me',
   },
   {
-    id: WITHTALLY_PARTNER.name,
+    id: ZERION_PARTNER.name,
     icon: (
-      <Tally
+      <Zerion
         style={{
           margin: '0 5px',
           verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
+          width: '21px',
+          height: '21px',
         }}
         alt={'Open external link'}
       />
     ),
-    tooltipText: 'View Collection in Tally',
+    tooltipText: 'View Collection in Zerion.io',
   },
   {
-    id: MOCA_PARTNER.name,
+    id: ZAPPER_PARTNER.name,
     icon: (
-      <Moca
+      <Zapper
         style={{
           margin: '0 5px',
           verticalAlign: 'middle',
-          width: '30px',
-          height: '30px',
+          width: '21px',
+          height: '21px',
         }}
         alt={'Open external link'}
       />
     ),
-    tooltipText: 'View Collection in Museumofcryptoart.com',
+    tooltipText: 'View Collection in Zapper.xyz',
   },
   {
     id: WELOOK_PARTNER.name,
@@ -178,36 +168,6 @@ export const collectionlLinks = [
       />
     ),
     tooltipText: 'View Collection in Welook.io',
-  },
-  {
-    id: BACKDROP_PARTNER.name,
-    icon: (
-      <Backdrop
-        style={{
-          margin: '0 5px',
-          verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
-        }}
-        alt={'Open external link'}
-      />
-    ),
-    tooltipText: 'View Collection in Backdrop.so',
-  },
-  {
-    id: GIT_POAP_PARTNER.name,
-    icon: (
-      <GitPoap
-        style={{
-          margin: '0 5px',
-          verticalAlign: 'middle',
-          width: '20px',
-          height: '20px',
-        }}
-        alt={'Open external link'}
-      />
-    ),
-    tooltipText: 'View Collection in GitPoap.io',
   },
   {
     id: POAP_IN_PARTNER.name,
