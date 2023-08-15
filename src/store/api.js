@@ -4,7 +4,7 @@ import {
   PAGINATED_DROPS_QUERY,
   SEARCH_DROPS_COUNT,
   SEARCH_PAGINATED_DROPS_QUERY,
-} from './compass/queries/paginatedDrops';
+} from './compass/queries/drops';
 import { creatUndefinedOrder, createSearchFilter } from './compass/utils';
 
 export const POAP_API_URL = process.env.REACT_APP_POAP_API_URL;
@@ -122,7 +122,57 @@ export const ActivityType = {
 };
 
 export async function getTop3Events() {
-  return await fetchPOAPApi('/top-3-events');
+  const fromCompassDropToEventInfo = (compassDrop) => {
+    return {
+      ...compassDrop,
+      tokenCount:
+        compassDrop.stats_by_chain_aggregate.aggregate.sum.poap_count ?? 0,
+      transferCount:
+        compassDrop.stats_by_chain_aggregate.aggregate.sum.transfer_count ?? 0,
+    };
+  };
+
+  const top3Events = await Promise.all([
+    compass.request(PAGINATED_DROPS_QUERY, {
+      limit: 1,
+      offset: 0,
+      orderBy: [
+        {
+          stats_by_chain_aggregate: { sum: { poap_count: 'desc_nulls_last' } },
+        },
+      ],
+      where: {
+        private: { _eq: 'false' },
+      },
+    }),
+    // Upcoming
+    compass.request(PAGINATED_DROPS_QUERY, {
+      limit: 1,
+      offset: 0,
+      orderBy: [{ start_date: 'asc' }],
+      where: {
+        private: { _eq: 'false' },
+        start_date: { _gt: 'now' },
+        stats_by_chain: { poap_count: { _gte: 1 } },
+      },
+    }),
+    // Most recent
+    compass.request(PAGINATED_DROPS_QUERY, {
+      limit: 1,
+      offset: 0,
+      orderBy: [{ start_date: 'desc' }],
+      where: {
+        private: { _eq: 'false' },
+        start_date: { _lt: 'now' },
+        stats_by_chain: { poap_count: { _gte: 1 } },
+      },
+    }),
+  ]);
+  return {
+    mostClaimed: fromCompassDropToEventInfo(top3Events[0].data.drops[0]),
+    upcoming: fromCompassDropToEventInfo(top3Events[1].data.drops[0]),
+    mostRecent: fromCompassDropToEventInfo(top3Events[2].data.drops[0]),
+  };
 }
 
 function setQueryParamsToUrl(url, queryParams) {
