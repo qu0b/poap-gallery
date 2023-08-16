@@ -97,3 +97,23 @@ export const SEARCH_DROPS_COUNT = `
     }
   }
 `;
+
+export const TRANSFER_ACTIVITY_QUERY = `
+query TransferActivity($limit: Int!, $orderBy: [transfers_order_by!]) {
+  transfers(order_by: $orderBy, limit: $limit) {
+    chain
+    to_address
+    from_address
+    timestamp
+    poap {
+      id
+      transfer_count
+      collector_address
+      drop {
+        id
+        image_url
+      }
+    }
+  }
+}
+`;
