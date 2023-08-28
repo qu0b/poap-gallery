@@ -18,6 +18,7 @@ import {
 import {
   ActivityType,
   getActivityName,
+  getChainName,
   getLastTransfers,
   POAP_APP_URL,
 } from '../store/api';
@@ -318,19 +319,19 @@ function TokenRowDescription({ transfer }) {
             {' '}
             {transfer.to.substring(0, 16) + '…'}{' '}
           </a>
-          from {transfer.chain} to Ethereum
+          from {getChainName(transfer.chain)} to Ethereum
         </span>
       ) : transfer.type === ActivityType.CLAIM ? (
         <span>
           POAP minted on event{' '}
           <Link to={`/event/${transfer.eventId}`}>#{transfer.eventId}</Link> on{' '}
-          {transfer.chain}
+          {getChainName(transfer.chain)}
         </span>
       ) : transfer.type === ActivityType.BURN ? (
         <span>
           POAP burned on event{' '}
           <Link to={`/event/${transfer.eventId}`}>#{transfer.eventId}</Link> on{' '}
-          {transfer.chain}
+          {getChainName(transfer.chain)}
         </span>
       ) : (
         <span>
@@ -352,7 +353,7 @@ function TokenRowDescription({ transfer }) {
             {' '}
             {shrinkAddress(transfer.to, 10)}
           </a>{' '}
-          on {transfer.chain}
+          on {getChainName(transfer.chain)}
         </span>
       )}
     </div>
