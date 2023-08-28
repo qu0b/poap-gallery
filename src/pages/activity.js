@@ -15,7 +15,12 @@ import {
   selectMostRecent,
   selectUpcoming,
 } from '../store';
-import { ActivityType, getLastTransfers, POAP_APP_URL } from '../store/api';
+import {
+  ActivityType,
+  getActivityName,
+  getLastTransfers,
+  POAP_APP_URL,
+} from '../store/api';
 import { EventCard } from '../components/eventCard';
 import { Pill } from '../components/pill';
 import Migration from '../assets/images/migrate.svg';
@@ -160,7 +165,7 @@ function TokenRow({ transfer, dateFormat }) {
           <div className="activity-type-pill">
             <Pill
               className={transfer.type}
-              text={transfer.type}
+              text={getActivityName(transfer.type)}
               tooltip={false}
             />
           </div>
@@ -224,7 +229,7 @@ function TokenRow({ transfer, dateFormat }) {
             <div className="activity-type-pill">
               <Pill
                 className={transfer.type}
-                text={transfer.type}
+                text={getActivityName(transfer.type)}
                 tooltip={false}
               />
             </div>
