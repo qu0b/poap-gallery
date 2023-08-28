@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { ActivityType, getLastTransfers, POAP_APP_URL } from '../store/api';
+import {
+  ActivityType,
+  getActivityName,
+  getLastTransfers,
+  POAP_APP_URL,
+} from '../store/api';
 import { Pill } from './pill';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
@@ -113,7 +118,7 @@ function Transfer({ transfer }) {
           </div>
           <div className="round-box-content">
             <Pill
-              text={transfer.type}
+              text={getActivityName(transfer.type)}
               className={transfer.type}
               tooltip={false}
             />

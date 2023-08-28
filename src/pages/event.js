@@ -449,7 +449,7 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
           {shrinkAddress(address, 15)}
         </a>
       </span>
-      <span className="claim-title">Claim Date</span>
+      <span className="claim-title">Minting Date</span>
       <span className="claim-content">{utcDateFormatted(token.created)}</span>
       <span className="tr-count-title">Transaction Count</span>
       <span className="tr-count-content">{token.transferCount}</span>

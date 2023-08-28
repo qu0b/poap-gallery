@@ -84,7 +84,7 @@ export async function getActivityPageData() {
 
   if (mostRecent) mostRecent.heading = 'Most Recent';
   if (upcoming) upcoming.heading = 'Upcoming Event';
-  if (mostClaimed) mostClaimed.heading = 'Most Claimed Token';
+  if (mostClaimed) mostClaimed.heading = 'Most Minted Token';
 
   return {
     mostRecent: mostRecent,

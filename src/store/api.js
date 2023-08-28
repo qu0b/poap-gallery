@@ -155,6 +155,10 @@ export const ActivityType = {
   BURN: 'BURN',
 };
 
+export function getActivityName(type) {
+  return type !== ActivityType.CLAIM ? ActivityType.CLAIM : 'MINT';
+}
+
 export async function getTop3Events() {
   const fromCompassDropToEventInfo = (compassDrop) => {
     return {
