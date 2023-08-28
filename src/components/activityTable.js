@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import {
   ActivityType,
   getActivityName,
+  getChainName,
   getLastTransfers,
   POAP_APP_URL,
 } from '../store/api';
@@ -131,7 +132,7 @@ function Transfer({ transfer }) {
                     #{transfer.eventId}
                   </Link>
                 </object>{' '}
-                on {transfer.chain}
+                on {getChainName(transfer.chain)}
               </span>
             ) : transfer.type === ActivityType.TRANSFER ? (
               <span>
@@ -157,7 +158,7 @@ function Transfer({ transfer }) {
                     {transfer.to.substring(0, 8) + '…'}{' '}
                   </a>
                 </object>
-                on {transfer.chain}
+                on {getChainName(transfer.chain)}
               </span>
             ) : transfer.type === ActivityType.MIGRATION ? (
               <span>
@@ -173,7 +174,7 @@ function Transfer({ transfer }) {
                     {transfer.to.substring(0, 16) + '…'}{' '}
                   </a>
                 </object>
-                from {transfer.chain} to Ethereum
+                from {getChainName(transfer.chain)} to Ethereum
               </span>
             ) : transfer.type === ActivityType.BURN ? (
               <span>
@@ -181,7 +182,7 @@ function Transfer({ transfer }) {
                 <Link to={`/event/${transfer.eventId}`}>
                   #{transfer.eventId}
                 </Link>{' '}
-                on {transfer.chain}
+                on {getChainName(transfer.chain)}
               </span>
             ) : null}
           </div>

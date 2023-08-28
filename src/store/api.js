@@ -159,6 +159,13 @@ export function getActivityName(type) {
   return type !== ActivityType.CLAIM ? ActivityType.CLAIM : 'MINT';
 }
 
+export function getChainName(chain) {
+  if (chain === 'xdai') {
+    return 'gnosis';
+  }
+  return chain;
+}
+
 export async function getTop3Events() {
   const fromCompassDropToEventInfo = (compassDrop) => {
     return {
