@@ -19,12 +19,8 @@ import {
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Helmet } from 'react-helmet';
-import { useDispatch, useSelector } from 'react-redux';
-import { FETCH_EVENT_PAGE_INFO_STATUS, fetchEventPageData } from '../store';
 import { CSVLink } from 'react-csv';
-import { getEnsData } from '../store/mutations';
 import { Loader } from '../components/loader';
-import _ from 'lodash';
 import { EventCard } from '../components/eventCard';
 import { Foliage } from '../components/foliage';
 import {
@@ -36,14 +32,15 @@ import {
 import { useWindowWidth } from '@react-hook/window-size/throttled';
 import { Spinner } from '../components/spinner';
 import { collectionlLinks, externalLinkSetter } from '../utilities/utilities';
-import { POAP_APP_URL } from '../store/api';
+import { getDrop, getEventTokens, POAP_APP_URL } from '../store/api';
 import { useMatomo } from '@datapunt/matomo-tracker-react';
 
-const FETCH_POAPS_LIMIT = 300;
+const FETCH_POAPS_LIMIT = 100;
+const BATCH_SIZE = 5;
+
 const CSV_STATUS = {
   DownloadingData: 'DownloadingData',
   DownloadingLastDataChunk: 'DownloadingLastDataChunk',
-  ReadyWithoutEns: 'ReadyWithoutEns',
   Ready: 'Ready',
   Failed: 'Failed',
   NoTokens: 'NoTokens',
@@ -70,59 +67,36 @@ export default function Events() {
 export function Event() {
   const params = useParams();
   const { eventId } = params;
-  const dispatch = useDispatch();
   const { trackPageView, trackLink } = useMatomo();
 
-  const tokens = useSelector((state) => state.events.tokens);
-  const loadingEvent = useSelector((state) => state.events.eventStatus);
-  const errorEvent = useSelector((state) => state.events.eventError);
-  const event = useSelector((state) => state.events.event);
-
   const [pageIndex, setPageIndex] = useState(0);
+  const [event, setEvent] = useState(null);
+  const [tokens, setTokens] = useState([]);
+  const [loadingTokensFailed, setLoadingTokensFailed] = useState(false);
   const [csv_data, setCsv_data] = useState([]);
-  const [ensNames, setEnsNames] = useState([]);
   const [canDownloadCsv, setCanDownloadCsv] = useState(CSV_STATUS.NoTokens);
   const [tableIsLoading, setTableIsLoading] = useState(true);
   const [trackedEvent, setTrackedEvent] = useState(null);
-  const pageCount = useMemo(
-    () =>
-      event.tokenCount % 50 !== 0
-        ? Math.floor(event.tokenCount / 50) + 1
-        : event.tokenCount,
-    [event]
-  );
   const power = calculatePower(csv_data);
 
   const csvDownloading = () =>
     canDownloadCsv === CSV_STATUS.DownloadingLastDataChunk ||
     canDownloadCsv === CSV_STATUS.DownloadingData;
   const csvReady = () => canDownloadCsv === CSV_STATUS.Ready;
-  const csvOnlyMissingEns = () => canDownloadCsv === CSV_STATUS.ReadyWithoutEns;
   const csvFailed = () => canDownloadCsv === CSV_STATUS.Failed;
-
-  const readyToResolveENS = () =>
-    canDownloadCsv === CSV_STATUS.DownloadingLastDataChunk ||
-    canDownloadCsv === CSV_STATUS.ReadyWithoutEns ||
-    canDownloadCsv === CSV_STATUS.Ready ||
-    canDownloadCsv === CSV_STATUS.Failed;
-
-  const succeededLoadingEvent = () =>
-    loadingEvent === FETCH_EVENT_PAGE_INFO_STATUS.SUCCEEDED;
-  const isLoadingEvent = () =>
-    loadingEvent === FETCH_EVENT_PAGE_INFO_STATUS.LOADING;
-  const failedLoadingEvent = () =>
-    loadingEvent === FETCH_EVENT_PAGE_INFO_STATUS.FAILED;
-  const isIdle = () =>
-    loadingEvent === FETCH_EVENT_PAGE_INFO_STATUS.IDLE ||
-    loadingEvent === undefined;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
+    if (event) return;
+
+    getDrop(eventId).then(setEvent);
+  }, [event]);
+
+  useEffect(() => {
     if (
-      succeededLoadingEvent() &&
       event &&
       event?.name &&
       event?.id &&
@@ -134,34 +108,59 @@ export function Event() {
       });
       setTrackedEvent(event.id);
     }
-  }, [event, succeededLoadingEvent, trackedEvent, setTrackedEvent]);
+  }, [event, trackedEvent, setTrackedEvent]);
+
+  async function getNextTokenBatch(batchSize) {
+    try {
+      return await Promise.all(
+        Array.from(Array(batchSize).keys()).map((i) => {
+          return getEventTokens(
+            eventId,
+            FETCH_POAPS_LIMIT,
+            FETCH_POAPS_LIMIT * (pageIndex + i)
+          );
+        })
+      );
+    } catch (e) {
+      console.error(e);
+      setLoadingTokensFailed(true);
+    }
+    return Promise.resolve([]);
+  }
 
   useEffect(() => {
     // Get new batch of tokens
-    if (eventId) {
-      dispatch(
-        fetchEventPageData({
-          eventId,
-          first: FETCH_POAPS_LIMIT,
-          skip: FETCH_POAPS_LIMIT * pageIndex,
-        })
-      );
+    if (event) {
+      // Call next batch of tokens (if there is more), then load the new tokens data
+      const totalPages = Math.ceil(event.tokenCount / FETCH_POAPS_LIMIT);
+      const hasMorePages = pageIndex < totalPages;
+
+      if (hasMorePages) {
+        setCanDownloadCsv(CSV_STATUS.DownloadingData);
+
+        const batchSize =
+          pageIndex + BATCH_SIZE < totalPages
+            ? BATCH_SIZE
+            : totalPages - pageIndex;
+
+        getNextTokenBatch(batchSize).then((newTokenResponses) => {
+          const fetchedTokens = [];
+          // Check the pages are not undefined
+          newTokenResponses.forEach((response) => {
+            if (response) fetchedTokens.push(...response.tokens);
+          });
+
+          setTokens([...fetchedTokens, ...tokens]);
+          setPageIndex(pageIndex + batchSize);
+        });
+      } else {
+        setCanDownloadCsv(CSV_STATUS.Ready);
+      }
     }
-  }, [dispatch, eventId, pageIndex]);
+  }, [eventId, event, pageIndex]);
 
   useEffect(() => {
-    // Call next batch of tokens (if there is more), then load the new tokens data
-    const totalPages = Math.ceil(event.tokenCount / FETCH_POAPS_LIMIT);
-    const hasMorePages = pageIndex < totalPages;
-    const hasTokens = tokens && tokens.length > 0;
-    if (event && hasTokens && hasMorePages) {
-      if (pageIndex + 1 === totalPages) {
-        setCanDownloadCsv(CSV_STATUS.DownloadingLastDataChunk);
-      } else {
-        setCanDownloadCsv(CSV_STATUS.DownloadingData);
-      }
-      setPageIndex(pageIndex + 1);
-    }
+    if (!event || !tokens) return;
 
     let _csv_data = [];
     _csv_data.push([
@@ -176,7 +175,7 @@ export function Event() {
       _csv_data.push([
         tokens[i].id,
         tokens[i].owner.id,
-        null,
+        tokens[i].owner.ens,
         utcDateFull(tokens[i].created),
         tokens[i].transferCount,
         tokens[i].owner.tokensOwned,
@@ -184,46 +183,6 @@ export function Event() {
     }
     setCsv_data(_csv_data);
   }, [event, tokens, pageIndex, setPageIndex]);
-
-  useEffect(() => {
-    // Merge ens data
-    if (ensNames.length > 0) {
-      // TODO: probably there is a better way to merge
-      let _csv_data = _.cloneDeep(csv_data);
-      for (let i = 0; i < tokens.length; i++) {
-        let validName = ensNames[i];
-        if (validName) {
-          if (_csv_data[i + 1]) {
-            _csv_data[i + 1][2] = validName; // i+1 is there to compensate for the first array which is just the csv titles
-          }
-        }
-      }
-      setCsv_data(_csv_data);
-    }
-  }, [ensNames]);
-
-  const validationCSVDownload = async () => {
-    setCanDownloadCsv(CSV_STATUS.ReadyWithoutEns);
-    let ownerIds = tokens.map((t) => t.owner.id);
-    try {
-      const ensData = await getEnsData(ownerIds);
-      if (ensData.length > 0) {
-        setEnsNames(ensData);
-        setCanDownloadCsv(CSV_STATUS.Ready);
-      } else {
-        setCanDownloadCsv(CSV_STATUS.Failed);
-      }
-    } catch (e) {
-      setCanDownloadCsv(CSV_STATUS.Failed);
-    }
-  };
-
-  useEffect(() => {
-    if (succeededLoadingEvent() && readyToResolveENS()) {
-      validationCSVDownload();
-    }
-    setTableIsLoading(!succeededLoadingEvent());
-  }, [tokens]);
 
   const defaultEventErrorMessage = 'Token not found';
 
@@ -234,7 +193,8 @@ export function Event() {
     setTableIsLoading(true);
     setCanDownloadCsv(CSV_STATUS.NoTokens);
     setPageIndex(0);
-    setEnsNames([]);
+    setEvent(undefined);
+    setTokens([]);
   };
   const onPageChangeHandler = () => {
     resetState();
@@ -252,14 +212,14 @@ export function Event() {
         <meta property="og:title" content="POAP Gallery - Event" />
       </Helmet>
       <Foliage />
-      {(isLoadingEvent() || isIdle()) && (
+      {!event && !loadingTokensFailed && (
         <div className={'center'}>
           <Loader />
         </div>
       )}
-      {failedLoadingEvent() && (
+      {loadingTokensFailed && (
         <div className={'token-not-found'}>
-          <h2>{errorEvent || defaultEventErrorMessage}</h2>
+          <h2>{loadingTokensFailed || defaultEventErrorMessage}</h2>
           <div>
             <img
               alt="warning sign"
@@ -269,7 +229,7 @@ export function Event() {
           </div>
         </div>
       )}
-      {succeededLoadingEvent() && (
+      {event && tokens && !loadingTokensFailed && (
         <div className="container">
           <div
             style={{
@@ -336,7 +296,7 @@ export function Event() {
             <div className="table-title">
               Collections <span>({tokens.length})</span>
             </div>
-            {(csvReady() || csvOnlyMissingEns() || csvFailed()) && (
+            {(csvReady() || csvFailed()) && (
               <CSVLink
                 onClick={() => {
                   const url = new URL(window.location.href);
@@ -349,17 +309,13 @@ export function Event() {
                 filename={`${event.name}.csv`}
                 target="_blank"
                 data-tip={`${
-                  csvOnlyMissingEns()
-                    ? 'Please wait if you want the ens names too'
-                    : csvFailed()
-                    ? "Ens names couldn't be fetched"
-                    : ''
+                  csvFailed() ? "Ens names couldn't be fetched" : ''
                 }`}
                 className={'btn csv-button'}
                 data={csv_data}
               >
                 <span className={'no-margin'}>{`Download CSV${
-                  csvOnlyMissingEns() || csvFailed() ? ' (without ENS)' : ''
+                  csvFailed() ? ' (without ENS)' : ''
                 }`}</span>
                 <ReactTooltip effect={'solid'} />
               </CSVLink>
@@ -376,12 +332,7 @@ export function Event() {
             )}
           </div>
           <div className="table-container">
-            <TableContainer
-              tokens={tokens}
-              ensNames={ensNames}
-              loading={tableIsLoading}
-              pageCount={pageCount}
-            />
+            <TableContainer tokens={tokens} loading={tableIsLoading} />
           </div>
         </div>
       )}
@@ -431,7 +382,7 @@ const ExternalLinkCell = ({ url, tooltipText = null, content }) => {
   );
 };
 
-function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
+function TableContainer({ tokens, loading }) {
   const [data, setData] = useState([]);
   const [mobileData, setMobileData] = useState([]);
 
@@ -532,11 +483,24 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
         ),
         col2: (
           <div>
-            <ExternalLinkCell
-              url={PoapScanLink(tokens[i])}
-              tooltipText="View Collection in POAP.scan"
-              content={tokens[i].owner.id}
-            />
+            {!tokens[i].owner.ens && (
+              <ExternalLinkCell
+                url={PoapScanLink(tokens[i])}
+                tooltipText="View Collection in POAP.scan"
+                content={tokens[i].owner.id}
+              />
+            )}
+            {tokens[i].owner.ens && (
+              <a
+                href={PoapScanLink(tokens[i])}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tip="View Collection in POAP.scan"
+              >
+                {' '}
+                <ReactTooltip effect="solid" /> {tokens[i].owner.ens}
+              </a>
+            )}
             {collectionlLinks.map((link) => (
               <ExternalIconCell
                 url={externalLinkSetter(tokens[i].owner.id, link.id)}
@@ -552,54 +516,19 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
         col5: tokens[i].owner.tokensOwned,
       });
       _mobileData.push({
-        col1: <MobileRow token={tokens[i]} address={tokens[i].owner.id} />,
+        col1: (
+          <MobileRow
+            token={tokens[i]}
+            address={
+              tokens[i].owner.ens ? tokens[i].owner.ens : tokens[i].owner.id
+            }
+          />
+        ),
       });
     }
     setData(_data);
     setMobileData(_mobileData);
   }, [tokens]);
-
-  useEffect(() => {
-    // Merge ens data
-    if (ensNames.length > 0) {
-      // TODO: probably there is a better way to merge
-      let _data = _.cloneDeep(data);
-      let _mobileData = _.cloneDeep(mobileData);
-      for (let i = 0; i < tokens.length; i++) {
-        let validName = ensNames[i];
-        if (validName) {
-          if (data[i]) {
-            _data[i].col2 = (
-              <div>
-                <a
-                  href={PoapScanLink(tokens[i])}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-tip="View Collection in POAP.scan"
-                >
-                  {' '}
-                  <ReactTooltip effect="solid" /> {validName}
-                </a>
-                {collectionlLinks.map((link) => (
-                  <ExternalIconCell
-                    url={externalLinkSetter(tokens[i].owner.id, link.id)}
-                    key={link.id}
-                    icon={link.icon}
-                    tooltipText={link.tooltipText}
-                  />
-                ))}
-              </div>
-            );
-            _mobileData[i].col1 = (
-              <MobileRow token={tokens[i]} address={validName} />
-            );
-          }
-        }
-      }
-      setData(_data);
-      setMobileData(_mobileData);
-    }
-  }, [ensNames]);
 
   const [dateFormat, setDateFormat] = useState('timeago');
   const toggleDateFormat = () => {
@@ -628,7 +557,6 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
     {
       columns,
       data,
-      pageCount: pc,
       initialState: {
         pageSize: length,
         sortBy: [
@@ -654,7 +582,6 @@ function TableContainer({ tokens, ensNames, pageCount: pc, loading }) {
     {
       columns: mobileColumns,
       data: mobileData,
-      pageCount: pc,
       initialState: { pageSize: length },
     },
     useSortBy,

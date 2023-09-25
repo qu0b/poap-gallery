@@ -1,36 +1,4 @@
-import {
-  getEvent,
-  getEventTokens,
-  getPaginatedEvents,
-  getTop3Events,
-  PAGE_LIMIT,
-} from './api';
-import { ensABI } from './abis';
-import _, { parseInt, uniqBy } from 'lodash';
-import { ethers } from 'ethers';
-
-const { REACT_APP_RPC_PROVIDER_URL, REACT_APP_ENS_CONTRACT } = process.env;
-const provider = new ethers.providers.StaticJsonRpcProvider(
-  REACT_APP_RPC_PROVIDER_URL
-);
-const ReverseRecords = new ethers.Contract(
-  REACT_APP_ENS_CONTRACT,
-  ensABI,
-  provider
-);
-
-// TODO: Refactor to render as it returns data rather than waiting all in batch
-export async function getEnsData(ownerIds) {
-  const chunked = _.chunk(ownerIds, 1200);
-  let allnames = [];
-  for (let i = 0; i < chunked.length; i++) {
-    const chunk = chunked[i];
-    let names = await ReverseRecords.getNames(chunk);
-    const validNames = names.map((name) => name !== '' && name);
-    allnames = _.concat(allnames, validNames);
-  }
-  return allnames;
-}
+import { getPaginatedEvents, getTop3Events, PAGE_LIMIT } from './api';
 
 export async function getIndexPageData(orderBy, reset, nameFilter, state) {
   let page, apiSkip;
@@ -91,29 +59,4 @@ export async function getActivityPageData() {
     mostClaimed: mostClaimed,
     upcoming: upcoming,
   };
-}
-
-export async function getEventPageData(eventId, first, skip) {
-  // Get the tokens info
-  let [eventTokens, event] = await Promise.all([
-    getEventTokens(eventId, first, skip),
-    getEvent(eventId),
-  ]);
-  const { tokens, total, transferCount } = eventTokens;
-  event.tokenCount = total;
-  event.transferCount = transferCount;
-
-  return {
-    id: eventId,
-    event,
-    tokens: uniqBy(tokens, 'id').sort((a, b) => {
-      return parseInt(a.id) - parseInt(b.id);
-    }),
-  };
-}
-
-export async function getEventTokenData(eventId, first, skip) {
-  const eventTokens = await getEventTokens(eventId, first, skip);
-  const { tokens } = eventTokens;
-  return { id: eventId, tokens };
 }
